@@ -31,6 +31,5 @@ WORKDIR /opt/simple-honey/
 
 RUN pip3 install -r requirements.txt
 RUN mkdir -p /data/hosted_files
-RUN python3 install.py
 
 CMD gunicorn -b 0.0.0.0:80 app:app
