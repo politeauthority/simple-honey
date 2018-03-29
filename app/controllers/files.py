@@ -2,7 +2,7 @@
 
 """
 
-from flask import Blueprint, redirect, send_file
+from flask import Blueprint, redirect, send_file, Response
 import os
 
 from app.helpers import misc
@@ -24,9 +24,18 @@ def index(path):
     file_path = os.path.join('/data/hosted_files/', path)
     if not os.path.exists(file_path):
         return redirect('files/404')
-    return send_file(
-        os.path.join('/data/hosted_files/', path),
-        attachment_filename=path[:path.rfind('/')])
+
+    file_name = file_path[:file_path.rfind('/')]
+    ext = file_name[file_name.rfind('.') + 1:].lower()
+
+    mimetype = None
+    if ext in ['jpg', 'jpeg', 'gif', 'png']:
+        mimetype = 'image/%s' % ext
+
+    response = Response()
+    response.headers['Content-Type'] = mimetype
+
+    return send_file(file_path, mimetype=mimetype)
 
 
 @files.route('404')

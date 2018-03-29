@@ -15,6 +15,7 @@ class WebRequest(Base):
     user_agent = Column(String(250))
     request_type = Column(String(10))
     ip = Column(String(50))
+    # notes = Column(Text())
 
     def __init__(self, _id=None):
         if _id:
@@ -22,9 +23,6 @@ class WebRequest(Base):
             c = self.query.filter(WebRequest.id == self.id).one()
             if c:
                 self._build_obj(c)
-
-    def __repr__(self):
-        return '<WebRequest %r, %r>' % (self.id, self.uri)
 
     def _build_obj(self, obj):
         self.id = int(obj.id)
@@ -34,6 +32,7 @@ class WebRequest(Base):
         self.ip = obj.ip
         self.request_type = obj.request_type
         self.ts_created = obj.data
-        self.ts_updated = obj.ts_updated['ts_updated']
+        self.ts_updated = obj.ts_updated
+        # self.notes = obj.notes
 
 # End File: simple-honey/app/controllers/web_request.py
