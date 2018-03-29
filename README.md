@@ -3,16 +3,16 @@ This creates a simple webserver which accepts POST and GET requests with web adm
 
 ## Example using docker
 ```
-    docker build -t simple-honey .
-    docker run \
-        --name=simple-honey \
-        -e SH_SH_HOST="HOST" \
-        -e SH_SH_USER="USER" \
-        -e SH_SH_PASS="PASS" \
-        -e VIRTUAL_HOST='simpe-honey.example.com' \
-        -td \
-        --restart=always \
-        simple-honey
+docker build -t simple-honey .
+docker run \
+    --name=simple-honey \
+    -e SH_DB_HOST="HOST" \
+    -e SH_DB_USER="USER" \
+    -e SH_DB_PASS="PASS" \
+    -e VIRTUAL_HOST='simpe-honey.example.com' \
+    -td \
+    --restart=always \
+    simple-honey
 ```
 
 ## Environmental Vars
@@ -34,4 +34,3 @@ ENV Var | Default | Description
 /opt/simple-honey | Code base path
 /data/hosted_files | Put files here to make available to a client
 /data/logs | Logs from the webserver
-`SH_DB_USER` | *None* | Database user name

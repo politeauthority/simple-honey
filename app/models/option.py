@@ -46,6 +46,7 @@ class Option(Base):
     def get(option_name):
         """
         Gets an option value if it exists or nothing.
+
         :param option_name: Name of the option you're looking for.
         :type option_name: string
         :returns: The Option ob if it exists or nothign.
@@ -63,6 +64,7 @@ class Option(Base):
         Sets default Options for an application easily.
         If the option passed in is a list, option default values will be Null, if options is a dict the keys and values
         is used to set the values.
+
         :param options: The option pairs to set.
         :type options: dict or list
         """
@@ -72,13 +74,14 @@ class Option(Base):
         else:
             for opt in options:
                 option_dict[opt] = None
-        for opt_name, opt_default_value in option_dict.iteritems():
+        for opt_name, opt_default_value in option_dict.items():
             Option.check_option_and_set_default(opt_name, opt_default_value)
 
     @staticmethod
     def check_option_and_set_default(option_name, option_default_value):
         """
         Checks if an option exists and writes the default value if it does not.
+
         :param option_name: The key of the option to be set.
         :type option_name: str
         :param option_default_value: The default for the option.
