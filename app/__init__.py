@@ -61,9 +61,14 @@ def register_admin(app):
     Starts the admin utility
 
     """
+    admin_url = Option.get('admin-url')
+    if admin_url:
+        admin_url = admin_url.value
+    else:
+        admin_url = os.environ.get('SH_ADMIN_URL')
     admin = Admin(
         app,
-        url="/%s" % Option.get('admin-url').value,
+        url="/%s" % admin_url,
         name='Simple-Honey',
         template_mode='bootstrap3')
 
@@ -76,12 +81,14 @@ def register_admin(app):
 
 
 def register_options():
+    """
+    Creates the default values for options.
+
+    """
     defaults = {
         'admin-url': os.environ.get('SH_ADMIN_URL')
     }
     Option.set_defaults(defaults)
-    options = Option.query.filter(Option.name == 'admin-url').all()
-    print(options)
 
 
 db.create_all()
