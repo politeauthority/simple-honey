@@ -21,11 +21,14 @@ db = SQLAlchemy(app)
 # Models
 from app.models.web_request import WebRequest
 from app.models.option import Option
+from app.models.redirection import Redirection
+from app.models.known_ip import KnownIp
 
 # Controllers
 from app.controllers.home import home as ctrl_home
 from app.controllers.files import files as ctrl_files
-from app.controllers.admin import WebRequestModelView, OptionModelView
+from app.controllers.redirection import redirection as ctrl_redirection
+from app.controllers.admin import WebRequestModelView, OptionModelView, RedirectionModelView, KnownIpModelView
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
@@ -54,6 +57,7 @@ def register_blueprints(app):
     """
     app.register_blueprint(ctrl_files)
     app.register_blueprint(ctrl_home)
+    app.register_blueprint(ctrl_redirection)
 
 
 def register_admin(app):
@@ -74,6 +78,8 @@ def register_admin(app):
 
     admin.add_view(WebRequestModelView(WebRequest, db.session))
     admin.add_view(OptionModelView(Option, db.session))
+    admin.add_view(RedirectionModelView(Redirection, db.session))
+    admin.add_view(KnownIpModelView(KnownIp, db.session))
     # admin.add_view(MicroBlogModelView(User, db.session))
 
     admin.add_view(FileAdmin('/data/hosted_files', '/files/', name='Hosted Files'))

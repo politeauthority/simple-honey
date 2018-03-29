@@ -39,4 +39,16 @@ class OptionModelView(ModelView):
     column_exclude_list = ['ts_created']
     column_default_sort = ('ts_updated', True)
 
+
+class RedirectionModelView(ModelView):
+    page_size = 50
+    column_exclude_list = ['ts_updated']
+    column_default_sort = ('ts_created', True)
+
+
+class KnownIpModelView(ModelView):
+    page_size = 50
+    column_exclude_list = ['ts_updated']
+    column_default_sort = ('ts_created', True)
+
 # End File: simple-honey/app/controllers/admin.py

@@ -15,7 +15,7 @@ class WebRequest(Base):
     user_agent = Column(String(250))
     request_type = Column(String(10))
     ip = Column(String(50))
-    # notes = Column(Text())
+    notes = Column(Text())
 
     def __init__(self, _id=None):
         if _id:
@@ -33,6 +33,6 @@ class WebRequest(Base):
         self.request_type = obj.request_type
         self.ts_created = obj.data
         self.ts_updated = obj.ts_updated
-        # self.notes = obj.notes
+        self.notes = obj.notes
 
 # End File: simple-honey/app/controllers/web_request.py
