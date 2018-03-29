@@ -1,16 +1,7 @@
 FROM frolvlad/alpine-python3
-RUN apk add --no-cache \
-    bash \
-    python3 \
-    python-dev \
-    py-pip \
-    gcc \
-    postgresql-dev \
-    py3-psycopg2 \
-    && rm -rf /var/cache/apk/*
 
-COPY ./ /opt/simple-honey/
-RUN pip3 install -r /opt/simple-honey/requirements.txt
+EXPOSE 80
+
 ENV SH_DB_ENGINE='postgresql'
 ENV SH_DB_HOST="some-postgres"
 ENV SH_DB_USER="User"
@@ -23,8 +14,23 @@ ENV TZ=America/Denver
 
 VOLUME /opt/simple-honey
 VOLUME /data
-RUN mkdir -p /data/hosted_files
-EXPOSE 80
+
+COPY ./ /opt/simple-honey/
+
+RUN apk add --no-cache \
+    bash \
+    python3 \
+    python-dev \
+    py-pip \
+    gcc \
+    postgresql-dev \
+    py3-psycopg2 \
+    && rm -rf /var/cache/apk/*
 
 WORKDIR /opt/simple-honey/
+
+RUN pip3 install -r requirements.txt
+RUN mkdir -p /data/hosted_files
+RUN python3 install.py
+
 CMD gunicorn -b 0.0.0.0:80 app:app

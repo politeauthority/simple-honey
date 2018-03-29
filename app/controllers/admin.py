@@ -28,7 +28,7 @@ class WebRequestModelView(ModelView):
     can_create = False
     page_size = 50
     column_exclude_list = ['ts_updated']
-    column_searchable_list = ['ts_created', 'user_agent', 'ip']
+    column_searchable_list = ['ts_created', 'user_agent', 'ip', 'uri']
     column_default_sort = ('ts_created', True)
 
 # End File: simple-honey/app/controllers/admin.py
