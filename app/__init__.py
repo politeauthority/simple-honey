@@ -20,12 +20,12 @@ db = SQLAlchemy(app)
 
 # Models
 from app.models.web_request import WebRequest
-from flask_admin.contrib.sqla import ModelView
+from app.models.option import Option
 
 # Controllers
 from app.controllers.home import home as ctrl_home
 from app.controllers.files import files as ctrl_files
-from app.controllers.admin import WebRequestModelView
+from app.controllers.admin import WebRequestModelView, OptionModelView
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
@@ -63,22 +63,33 @@ def register_admin(app):
     """
     admin = Admin(
         app,
-        url="/%s" % os.environ.get('SH_ADMIN_URL'),
+        url="/%s" % Option.get('admin-url').value,
         name='Simple-Honey',
         template_mode='bootstrap3')
 
-    modelview_webrequest = WebRequestModelView(WebRequest, db.session)
-    admin.add_view(modelview_webrequest)
+    admin.add_view(WebRequestModelView(WebRequest, db.session))
+    admin.add_view(OptionModelView(Option, db.session))
     # admin.add_view(MicroBlogModelView(User, db.session))
 
     admin.add_view(FileAdmin('/data/hosted_files', '/files/', name='Hosted Files'))
     return admin
 
 
+def register_options():
+    defaults = {
+        'admin-url': os.environ.get('SH_ADMIN_URL')
+    }
+    Option.set_defaults(defaults)
+    options = Option.query.filter(Option.name == 'admin-url').all()
+    print(options)
+
+
+db.create_all()
+
 register_logging(app)
 register_blueprints(app)
 admin = register_admin(app)
-db.create_all()
+register_options()
 # register_api(app)
 
 app.logger.info('Started App')

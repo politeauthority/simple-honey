@@ -19,6 +19,9 @@ class Base(db.Model):
             self.id = _id
             self._build_obj(self)
 
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, self.id)
+
     def save(self):
         if not self.id:
             db.session.add(self)
