@@ -1,5 +1,7 @@
 # Simple Honey
-This creates a simple webserver which accepts POST and GET requests with web administration and easy customization.
+This creates a simple webserver which acts as a honey pot, that is very easy to control.
+It accepts POST and GET requests with web administration and easy customization.
+Currently installs at around 256 MB.
 
 ## Example using docker
 ```

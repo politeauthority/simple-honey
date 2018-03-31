@@ -53,11 +53,12 @@ def register_logging(app):
 def register_blueprints(app):
     """
     Connect the blueprints to the router.
+    @note: If ctrl_home is not last, routing gets wonky!
 
     """
     app.register_blueprint(ctrl_files)
-    app.register_blueprint(ctrl_home)
     app.register_blueprint(ctrl_redirection)
+    app.register_blueprint(ctrl_home)
 
 
 def register_admin(app):
