@@ -21,11 +21,14 @@ db = SQLAlchemy(app)
 # Models
 from app.models.web_request import WebRequest
 from app.models.option import Option
+from app.models.redirection import Redirection
+from app.models.known_ip import KnownIp
 
 # Controllers
 from app.controllers.home import home as ctrl_home
 from app.controllers.files import files as ctrl_files
-from app.controllers.admin import WebRequestModelView, OptionModelView
+from app.controllers.redirection import redirection as ctrl_redirection
+from app.controllers.admin import WebRequestModelView, OptionModelView, RedirectionModelView, KnownIpModelView
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
@@ -34,6 +37,8 @@ def register_logging(app):
     """
     Connects the logging to the app.
 
+    :param app: Current Flask application
+    :type app: <Flask 'app'> obj
     """
     log_dir = os.path.join(app.config['APP_DATA_PATH'], 'logs')
     if not os.path.exists(log_dir):
@@ -50,9 +55,13 @@ def register_logging(app):
 def register_blueprints(app):
     """
     Connect the blueprints to the router.
+    @note: If ctrl_home is not last, routing gets wonky!
 
+    :param app: Current Flask application
+    :type app: <Flask 'app'> obj
     """
     app.register_blueprint(ctrl_files)
+    app.register_blueprint(ctrl_redirection)
     app.register_blueprint(ctrl_home)
 
 
@@ -60,6 +69,10 @@ def register_admin(app):
     """
     Starts the admin utility
 
+    :param app: Current Flask application
+    :type app: <Flask 'app'> obj
+    :returns: Flask Admin with registered controllers
+    :rtype: <flask_admin> obj
     """
     admin_url = Option.get('admin-url')
     if admin_url:
@@ -73,10 +86,11 @@ def register_admin(app):
         template_mode='bootstrap3')
 
     admin.add_view(WebRequestModelView(WebRequest, db.session))
-    admin.add_view(OptionModelView(Option, db.session))
-    # admin.add_view(MicroBlogModelView(User, db.session))
-
+    admin.add_view(RedirectionModelView(Redirection, db.session))
+    admin.add_view(KnownIpModelView(KnownIp, db.session))
     admin.add_view(FileAdmin('/data/hosted_files', '/files/', name='Hosted Files'))
+    admin.add_view(OptionModelView(Option, db.session))
+
     return admin
 
 

@@ -1,5 +1,7 @@
 # Simple Honey
-This creates a simple webserver which accepts POST and GET requests with web administration and easy customization.
+This creates a simple webserver which acts as a honey pot, that is very easy to control.
+It accepts POST and GET requests with web administration and easy customization.
+Currently installs at around 256 MB.
 
 ## Example using docker
 ```
@@ -26,6 +28,7 @@ ENV Var | Default | Description
 `SH_DB_NAME`  | simple_honey | Database name
 `SH_ADMIN_URL` | 'the-admin' | URI for admin
 `VIRTUAL_HOST`  |  *None*  | URL the Nginx proxy will route to this container
+`TZ` | 'America/Denver' | Timezone for the container to run in
 
 
 ## Volume Mounts
