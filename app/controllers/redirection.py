@@ -1,4 +1,6 @@
 """Redirection - Controller
+This module works like a URL shorterner with logging. New redirections are setup in the admin and records can be viewed
+in the same place as all other hits.
 
 """
 
@@ -24,7 +26,12 @@ def index(path):
 
     matched_uri = redir.query.filter(redir.uri == path).one()
     if matched_uri:
+        if matched_uri.hits:
+            matched_uri.hits = matched_uri.hits + 1
+        else:
+            matched_uri.hits = 1
+        matched_uri.save()
         return redirect(matched_uri.redirect_url, 301)
-    # return send_file(file_path, mimetype=mimetype)
+    redirect('errors/404', 404)
 
 # End File: simple-honey/app/controllers/redirection.py

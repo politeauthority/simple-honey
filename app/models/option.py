@@ -18,30 +18,6 @@ class Option(Base):
         UniqueConstraint('name', name='uix_1'),
     )
 
-    def __init__(self, _id=None):
-        """
-        Loads and sets an model object if an _id is passed in.
-        :param _id: The id of the object to load.
-        :type _id: int
-        """
-        if _id:
-            self.id = _id
-            c = self.query.filter(Option.id == self.id).one()
-            if c:
-                self.__build_obj__(c)
-
-    def __build_obj__(self, obj):
-        """
-        Sets the objects values
-        :param obj: Current object
-        :type obj: Option obj
-        """
-        self.id = int(obj.id)
-        self.ts_created = obj.data
-        self.ts_updated = obj.ts_updated
-        self.name = obj.name
-        self.value = obj.instagram_id
-
     @staticmethod
     def get(option_name):
         """
@@ -75,12 +51,12 @@ class Option(Base):
             for opt in options:
                 option_dict[opt] = None
         for opt_name, opt_default_value in option_dict.items():
-            Option.check_option_and_set_default(opt_name, opt_default_value)
+            Option._check_option_and_set_default(opt_name, opt_default_value)
 
     @staticmethod
-    def check_option_and_set_default(option_name, option_default_value):
+    def _check_option_and_set_default(option_name, option_default_value):
         """
-        Checks if an option exists and writes the default value if it does not.
+        Private Method. Checks if an option exists and writes the default value if it does not.
 
         :param option_name: The key of the option to be set.
         :type option_name: str

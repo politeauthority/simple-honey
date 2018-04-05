@@ -28,6 +28,7 @@ ENV Var | Default | Description
 `SH_DB_NAME`  | simple_honey | Database name
 `SH_ADMIN_URL` | 'the-admin' | URI for admin
 `VIRTUAL_HOST`  |  *None*  | URL the Nginx proxy will route to this container
+`TZ` | 'America/Denver' | Timezone for the container to run in
 
 
 ## Volume Mounts

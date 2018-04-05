@@ -1,7 +1,8 @@
-"""Known Ip - MODEL
+"""KnownIp - MODEL
 
 """
 from sqlalchemy import Column, Text, String, DateTime
+from sqlalchemy.orm import relationship
 
 from app.models.base import Base
 
@@ -14,21 +15,6 @@ class KnownIp(Base):
     name = Column(String(100))
     last_seen = Column(DateTime)
     notes = Column(Text())
-
-    def __init__(self, _id=None):
-        if _id:
-            self.id = _id
-            r = self.query.filter(KnownIp.id == self.id).one()
-            if r:
-                self._build_obj(r)
-
-    def _build_obj(self, obj):
-        self.id = int(obj.id)
-        self.ts_created = obj.data
-        self.ts_updated = obj.ts_updated
-        self.ip = obj.ip
-        self.name = obj.name
-        self.last_seen = obj.last_seen
-        self.notes = obj.notes
+    requests = relationship('WebRequest', back_populates="known_ip")
 
 # End File: simple-honey/app/models/known_ip.py
