@@ -19,10 +19,12 @@ app.config.from_pyfile('config/dev.py')
 db = SQLAlchemy(app)
 
 # Models
+# @todo: Make this pep8 by loading the modules earlier in this file, if thats even possible.
 from app.models.web_request import WebRequest
 from app.models.option import Option
 from app.models.redirection import Redirection
 from app.models.known_ip import KnownIp
+from app.models.uri import Uri
 
 # Controllers
 from app.controllers.home import home as ctrl_home

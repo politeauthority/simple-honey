@@ -5,7 +5,6 @@ from sqlalchemy import Column, String, PickleType, Text, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from app.models.base import Base
-# from app.models.
 
 
 class WebRequest(Base):
@@ -24,5 +23,7 @@ class WebRequest(Base):
     notes = Column(Text())
     known_id = Column(Integer, ForeignKey('known_ips.id'))
     known_ip = relationship("KnownIp", back_populates="requests")
+    uri_id = Column(Integer, ForeignKey('uris.id'))
+    uri = relationship("Uri", back_populates="requests")
 
 # End File: simple-honey/app/models/web_request.py
