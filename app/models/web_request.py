@@ -24,6 +24,6 @@ class WebRequest(Base):
     known_id = Column(Integer, ForeignKey('known_ips.id'))
     known_ip = relationship("KnownIp", back_populates="requests")
     uri_id = Column(Integer, ForeignKey('uris.id'))
-    uri = relationship("Uri", back_populates="requests")
+    # uri = relationship("Uri", back_populates="requests")
 
 # End File: simple-honey/app/models/web_request.py

@@ -21,6 +21,7 @@ def index(path):
     """
 
     misc.record_hit()
+    return str(path)
     return ''
 
 

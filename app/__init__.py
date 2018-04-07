@@ -111,8 +111,8 @@ db.create_all()
 
 register_logging(app)
 register_blueprints(app)
-admin = register_admin(app)
 register_options()
+admin = register_admin(app)
 # register_api(app)
 
 app.logger.info('Started App')
