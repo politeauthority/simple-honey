@@ -1,8 +1,8 @@
 """Home - Controller
 
 """
-
-from flask import Blueprint, request
+import os
+from flask import Blueprint, request, redirect
 
 from app.helpers import misc
 
@@ -19,11 +19,31 @@ def index(path):
     :param path: url extensions
     :type path: str
     """
-
+    requested_path = '/' + path
     misc.record_hit()
-    return str(path)
+    uri_map = misc.get_uri_map()
+    if requested_path in uri_map:
+        if uri_map[requested_path]['response_type'] == 'file':
+            draw_file(requested_path)
     return ''
 
+
+def draw_file(path):
+    file_path = os.path.join('/data/hosted_files/', path)
+    if not os.path.exists(file_path):
+        return redirect('files/404')
+
+    file_name = file_path[:file_path.rfind('/')]
+    ext = file_name[file_name.rfind('.') + 1:].lower()
+
+    mimetype = None
+    if ext in ['jpg', 'jpeg', 'gif', 'png']:
+        mimetype = 'image/%s' % ext
+
+    response = Response()
+    response.headers['Content-Type'] = mimetype
+
+    return send_file(file_path, mimetype=mimetype)
 
 @home.route('ip', methods=['GET', 'POST'])
 def ip():
