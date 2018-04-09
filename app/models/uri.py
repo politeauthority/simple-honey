@@ -17,7 +17,7 @@ class Uri(Base):
     last_hit = Column(DateTime)
     notes = Column(Text())
     response_type = Column(String(100))
-    meta = Column(Text())
+    meta_val = Column(Text())
     requests = relationship('WebRequest', back_populates="uri")
     hits = Column(Integer, default=1)
 

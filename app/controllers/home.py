@@ -2,7 +2,7 @@
 
 """
 import os
-from flask import Blueprint, request, redirect
+from flask import Blueprint, request, redirect, send_file, Response
 
 from app.helpers import misc
 
@@ -23,8 +23,11 @@ def index(path):
     misc.record_hit()
     uri_map = misc.get_uri_map()
     if requested_path in uri_map:
-        if uri_map[requested_path]['response_type'] == 'file':
-            draw_file(requested_path)
+        req = uri_map[requested_path]
+        if req['response_type'] == 'file':
+            return draw_file(requested_path), 200
+        elif req['response_type'] == 'redirect':
+            return redirect_client(req)
     return ''
 
 
@@ -44,6 +47,18 @@ def draw_file(path):
     response.headers['Content-Type'] = mimetype
 
     return send_file(file_path, mimetype=mimetype)
+
+
+def redirect_client(requested_uri):
+    """
+    Redirects the client to the value of the Uri's meta_value.
+
+    :param requested_uri: The Uri info to be redirected.
+    :type requested_uri: dict
+    :returns: Redirection.
+    """
+    return redirect(requested_uri['value'], 301)
+
 
 @home.route('ip', methods=['GET', 'POST'])
 def ip():

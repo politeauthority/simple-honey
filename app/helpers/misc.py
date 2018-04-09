@@ -30,6 +30,7 @@ def get_uri_map():
         the_map[uri.uri] = {
             'uri_id': uri.id,
             'response_type': uri.response_type,
+            'value': uri.meta_val
         }
     g.uri_map = the_map
     return the_map
