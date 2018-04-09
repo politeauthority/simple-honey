@@ -4,6 +4,7 @@ Main file for the entire flask app.
 """
 import os
 import logging
+
 from logging.handlers import TimedRotatingFileHandler
 from werkzeug.contrib.fixers import ProxyFix
 
@@ -19,16 +20,16 @@ app.config.from_pyfile('config/dev.py')
 db = SQLAlchemy(app)
 
 # Models
+# @todo: Make this pep8 by loading the modules earlier in this file, if thats even possible.
 from app.models.web_request import WebRequest
 from app.models.option import Option
-from app.models.redirection import Redirection
 from app.models.known_ip import KnownIp
+from app.models.uri import Uri
 
 # Controllers
 from app.controllers.home import home as ctrl_home
 from app.controllers.files import files as ctrl_files
-from app.controllers.redirection import redirection as ctrl_redirection
-from app.controllers.admin import WebRequestModelView, OptionModelView, RedirectionModelView, KnownIpModelView
+from app.controllers.admin import WebRequestModelView, OptionModelView, KnownIpModelView, UriModelView
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
@@ -61,7 +62,6 @@ def register_blueprints(app):
     :type app: <Flask 'app'> obj
     """
     app.register_blueprint(ctrl_files)
-    app.register_blueprint(ctrl_redirection)
     app.register_blueprint(ctrl_home)
 
 
@@ -86,8 +86,8 @@ def register_admin(app):
         template_mode='bootstrap3')
 
     admin.add_view(WebRequestModelView(WebRequest, db.session))
-    admin.add_view(RedirectionModelView(Redirection, db.session))
     admin.add_view(KnownIpModelView(KnownIp, db.session))
+    admin.add_view(UriModelView(Uri, db.session))
     admin.add_view(FileAdmin('/data/hosted_files', '/files/', name='Hosted Files'))
     admin.add_view(OptionModelView(Option, db.session))
 
@@ -109,8 +109,8 @@ db.create_all()
 
 register_logging(app)
 register_blueprints(app)
-admin = register_admin(app)
 register_options()
+admin = register_admin(app)
 # register_api(app)
 
 app.logger.info('Started App')
