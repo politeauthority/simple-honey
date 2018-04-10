@@ -5,6 +5,7 @@ import os
 from flask import Blueprint, request, redirect, send_file, Response
 
 from app.helpers import misc
+from app.helpers import track
 
 home = Blueprint('Home', __name__, url_prefix='/')
 
@@ -20,18 +21,30 @@ def index(path):
     :type path: str
     """
     requested_path = '/' + path
-    misc.record_hit()
+    track.record_hit()
     uri_map = misc.get_uri_map()
+
     if requested_path in uri_map:
         req = uri_map[requested_path]
+        print('')
+        print('')
+        print(req['response_type'])
+        print(req)
+        print()
+        return str(req['response_type'])
         if req['response_type'] == 'file':
-            return draw_file(requested_path), 200
+            return str(path)
+            # return draw_file(requested_path), 200
         elif req['response_type'] == 'redirect':
             return redirect_client(req)
-    return ''
+    return 'nothing'
 
 
 def draw_file(path):
+    """
+
+
+    """
     file_path = os.path.join(os.environ.get('HOSTED_FILES'), path)
     if not os.path.exists(file_path):
         return redirect('files/404')
@@ -67,7 +80,7 @@ def ip():
     Fire off the requesting entities IP address
 
     """
-    misc.record_hit()
+    track.record_hit()
     return str(request.remote_addr)
 
 
@@ -78,7 +91,7 @@ def robots():
     Real simple robotos.txt file for the bots.
 
     """
-    misc.record_hit()
+    track.record_hit()
     return """
 User-agent: *\n
 Disallow: /\n

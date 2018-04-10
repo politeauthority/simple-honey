@@ -34,9 +34,8 @@ class WebRequestModelView(ModelView):
     can_export = True
     can_create = False
     page_size = 50
-    column_exclude_list = ['ts_updated']
-    column_searchable_list = ['ts_created', 'user_agent']
     form_excluded_columns = ['ts_created', 'ts_updated', 'requests']
+    column_searchable_list = ['ts_created', 'user_agent']
     column_list = ['ip.ip', 'uri.uri', 'user_agent', 'ts_created']
     column_default_sort = ('ts_created', True)
 
@@ -57,6 +56,7 @@ class KnownIpModelView(ModelView):
     form_base_class = SecureForm
     column_type_formatters = MY_DEFAULT_FORMATTERS
     page_size = 50
+    column_searchable_list = ['ip', 'name', 'last_seen', 'ts_created']
     form_excluded_columns = ['ts_created', 'ts_updated']
     column_exclude_list = ['ts_updated']
     column_default_sort = ('ts_created', True)
