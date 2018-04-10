@@ -32,7 +32,7 @@ def index(path):
 
 
 def draw_file(path):
-    file_path = os.path.join('/data/hosted_files/', path)
+    file_path = os.path.join(os.environ.get('HOSTED_FILES'), path)
     if not os.path.exists(file_path):
         return redirect('files/404')
 

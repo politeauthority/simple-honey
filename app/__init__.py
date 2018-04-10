@@ -2,8 +2,8 @@
 Main file for the entire flask app.
 
 """
-import os
 import logging
+import os
 
 from logging.handlers import TimedRotatingFileHandler
 from werkzeug.contrib.fixers import ProxyFix
@@ -85,10 +85,10 @@ def register_admin(app):
         name='Simple-Honey',
         template_mode='bootstrap3')
 
+    admin.add_view(UriModelView(Uri, db.session))
     admin.add_view(WebRequestModelView(WebRequest, db.session))
     admin.add_view(KnownIpModelView(KnownIp, db.session))
-    admin.add_view(UriModelView(Uri, db.session))
-    admin.add_view(FileAdmin('/data/hosted_files', '/files/', name='Hosted Files'))
+    admin.add_view(FileAdmin(os.environ.get('HOSTED_FILES'), '/files/', name='Hosted Files'))
     admin.add_view(OptionModelView(Option, db.session))
 
     return admin
