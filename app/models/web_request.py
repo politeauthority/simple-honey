@@ -12,6 +12,7 @@ class WebRequest(Base):
     __tablename__ = 'web_requests'
 
     data = Column(PickleType())
+    domain = Column(String(250))
     user_agent = Column(String(250))
     request_type = Column(String(10))
     platform = Column(String(100))

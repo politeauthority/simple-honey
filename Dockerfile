@@ -9,6 +9,7 @@ ENV SH_DB_PASS="Pass"
 ENV SH_DB_PORT="5432"
 ENV SH_DB_NAME="simple_honey"
 ENV SH_ADMIN_URL="the-admin"
+ENV HOSTED_FILES="/data/hosted_files/"
 ENV FLASK_APP="/opt/simple-honey/manage.py"
 ENV TZ=America/Denver
 
@@ -30,6 +31,6 @@ RUN apk add --no-cache \
 WORKDIR /opt/simple-honey/
 
 RUN pip3 install -r requirements.txt
-RUN mkdir -p /data/hosted_files
+RUN mkdir -p $HOSTED_FILES
 
 CMD gunicorn -b 0.0.0.0:80 app:app

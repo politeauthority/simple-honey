@@ -101,6 +101,7 @@ def _record_web_request(uri_id, ip_id):
         request_type = 'GET'
     wr = WebRequest()
     wr.data = data
+    wr.domain = request.url_root
     wr.request_type = request_type
     wr.platform = request.user_agent.platform
     wr.browser_name = request.user_agent.browser

@@ -21,6 +21,8 @@ class UriModelView(ModelView):
     form_base_class = SecureForm
     column_type_formatters = MY_DEFAULT_FORMATTERS
     page_size = 50
+    column_list = ['uri', 'name', 'last_hit', 'hits']
+    column_searchable_list = ['ts_created', 'uri', 'name']
     form_excluded_columns = ['ts_created', 'ts_updated', 'last_hit']
     column_exclude_list = ['ts_updated']
     column_default_sort = ('ts_created', True)
