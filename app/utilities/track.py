@@ -1,4 +1,4 @@
-"""Track - Helper
+"""Track - utilities
 
 """
 from datetime import datetime
@@ -9,7 +9,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from app.models.web_request import WebRequest
 from app.models.uri import Uri
 from app.models.known_ip import KnownIp
-from app.helpers import misc
+from app.utilities import misc
 
 
 def record_hit():
@@ -31,15 +31,6 @@ def _record_uri():
     """
     requested_path = request.environ['PATH_INFO']
     if requested_path in misc.get_uri_map():
-        print('')
-
-        print(requested_path)
-        print(requested_path)
-        print(requested_path)
-        print('')
-        print('')
-        print('')
-        print('')
         try:
             uri = Uri.query.filter(Uri.uri == requested_path).one()
             uri.hits = uri.hits + 1
@@ -51,7 +42,6 @@ def _record_uri():
             uri.response__type = 'file'
             uri.hits = 1
         uri.last_hit = datetime.utcnow()
-
     else:
         uri = Uri()
         uri.uri = requested_path

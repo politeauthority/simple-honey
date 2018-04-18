@@ -7,7 +7,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin.model import typefmt
 from flask_admin.form import SecureForm
 
-from app.helpers import misc
+from app.utilities import misc
 
 
 MY_DEFAULT_FORMATTERS = dict(typefmt.BASE_FORMATTERS)
@@ -20,12 +20,13 @@ MY_DEFAULT_FORMATTERS.update({
 class UriModelView(ModelView):
     form_base_class = SecureForm
     column_type_formatters = MY_DEFAULT_FORMATTERS
-    page_size = 50
+    page_size = 25
     column_list = ['uri', 'name', 'last_hit', 'hits']
+    column_formatters = dict(uri=misc.format_uri_links)
     column_searchable_list = ['ts_created', 'uri', 'name']
-    form_excluded_columns = ['ts_created', 'ts_updated', 'last_hit']
+    form_excluded_columns = ['ts_created', 'ts_updated', 'last_hit', 'web_request.requests']
     column_exclude_list = ['ts_updated']
-    column_default_sort = ('ts_created', True)
+    column_default_sort = ('ts_updated', True)
 
 
 class WebRequestModelView(ModelView):
@@ -33,9 +34,10 @@ class WebRequestModelView(ModelView):
     column_type_formatters = MY_DEFAULT_FORMATTERS
     can_export = True
     can_create = False
-    page_size = 50
+    page_size = 25
+    column_formatters = dict(ip=misc.format_webrequest_links)
     form_excluded_columns = ['ts_created', 'ts_updated', 'requests']
-    column_searchable_list = ['ts_created', 'user_agent']
+    column_searchable_list = ['ts_created', 'user_agent', 'uri.uri']
     column_list = ['ip.ip', 'uri.uri', 'user_agent', 'ts_created']
     column_default_sort = ('ts_created', True)
 
@@ -45,7 +47,7 @@ class OptionModelView(ModelView):
     column_type_formatters = MY_DEFAULT_FORMATTERS
     can_delete = False
     can_create = False
-    page_size = 50
+    page_size = 25
     column_exclude_list = ['ts_created']
     form_excluded_columns = ['ts_created', 'ts_updated']
     column_list = ['name', 'value', 'ts_updated']
@@ -55,7 +57,7 @@ class OptionModelView(ModelView):
 class KnownIpModelView(ModelView):
     form_base_class = SecureForm
     column_type_formatters = MY_DEFAULT_FORMATTERS
-    page_size = 50
+    page_size = 25
     column_searchable_list = ['ip', 'name', 'last_seen', 'ts_created']
     form_excluded_columns = ['ts_created', 'ts_updated']
     column_exclude_list = ['ts_updated']

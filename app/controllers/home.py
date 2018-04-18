@@ -1,11 +1,10 @@
 """Home - Controller
 
 """
-import os
-from flask import Blueprint, request, redirect, send_file, Response
+from flask import Blueprint, request, redirect
 
-from app.helpers import misc
-from app.helpers import track
+from app.utilities import misc
+from app.utilities import track
 
 home = Blueprint('Home', __name__, url_prefix='/')
 
@@ -26,40 +25,11 @@ def index(path):
 
     if requested_path in uri_map:
         req = uri_map[requested_path]
-        print('')
-        print('')
-        print(req['response_type'])
-        print(req)
-        print()
-        return str(req['response_type'])
         if req['response_type'] == 'file':
-            return str(path)
-            # return draw_file(requested_path), 200
+            return misc.draw_file(req['value']), 200
         elif req['response_type'] == 'redirect':
             return redirect_client(req)
-    return 'nothing'
-
-
-def draw_file(path):
-    """
-
-
-    """
-    file_path = os.path.join(os.environ.get('HOSTED_FILES'), path)
-    if not os.path.exists(file_path):
-        return redirect('files/404')
-
-    file_name = file_path[:file_path.rfind('/')]
-    ext = file_name[file_name.rfind('.') + 1:].lower()
-
-    mimetype = None
-    if ext in ['jpg', 'jpeg', 'gif', 'png']:
-        mimetype = 'image/%s' % ext
-
-    response = Response()
-    response.headers['Content-Type'] = mimetype
-
-    return send_file(file_path, mimetype=mimetype)
+    return ''
 
 
 def redirect_client(requested_uri):

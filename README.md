@@ -27,7 +27,8 @@ ENV Var | Default | Description
 `SH_DB_PORT` | 5432 | Database host
 `SH_DB_NAME`  | simple_honey | Database name
 `SH_ADMIN_URL` | 'the-admin' | URI for admin
-`HOSTED_FILES` | /data/hosted_files | Path for uploaded files for the server to host
+`SH_HOSTED_FILES_URL` |
+`SH_HOSTED_FILES` | /data/hosted_files | Path for uploaded files for the server to host
 `VIRTUAL_HOST`  |  *None*  | URL the Nginx proxy will route to this container
 `TZ` | 'America/Denver' | Timezone for the container to run in
 

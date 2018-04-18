@@ -18,6 +18,19 @@ class Option(Base):
         UniqueConstraint('name', name='uix_1'),
     )
 
+    def load_all():
+        """
+        Loads all options and stores them into the flask g object.
+
+        :returns: All options from the database.
+        :rtype: dict
+        """
+        options = Option.query.all()
+        opt_dict = {}
+        for o in options:
+            opt_dict[o.name] = o
+        return opt_dict
+
     @staticmethod
     def get(option_name):
         """
