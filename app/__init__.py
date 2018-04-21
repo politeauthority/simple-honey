@@ -8,7 +8,7 @@ import os
 from logging.handlers import TimedRotatingFileHandler
 from werkzeug.contrib.fixers import ProxyFix
 
-from flask import Flask
+from flask import Flask, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
 from flask_admin.contrib.fileadmin import FileAdmin
@@ -88,7 +88,7 @@ def register_admin(app):
     admin.add_view(UriModelView(Uri, db.session))
     admin.add_view(WebRequestModelView(WebRequest, db.session))
     admin.add_view(KnownIpModelView(KnownIp, db.session))
-    admin.add_view(FileAdmin(os.environ.get('HOSTED_FILES'), '/files/', name='Hosted Files'))
+    admin.add_view(FileAdmin(os.environ.get('SH_HOSTED_FILES'), '/files/', name='Hosted Files'))
     admin.add_view(OptionModelView(Option, db.session))
 
     return admin
@@ -100,9 +100,18 @@ def register_options():
 
     """
     defaults = {
-        'admin-url': os.environ.get('SH_ADMIN_URL')
+        'admin-url': os.environ.get('SH_ADMIN_URL'),
+        'hosted-file-url': os.environ.get('SH_HOSTED_FILES_URL')
     }
     Option.set_defaults(defaults)
+
+
+def load_options():
+    """
+    Loads all options and sets them into the Flask g object.
+
+    """
+    g['options'] = Option.load_all()
 
 
 db.create_all()
@@ -110,6 +119,7 @@ db.create_all()
 register_logging(app)
 register_blueprints(app)
 register_options()
+# load_options()
 admin = register_admin(app)
 # register_api(app)
 

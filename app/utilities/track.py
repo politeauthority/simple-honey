@@ -1,39 +1,17 @@
-"""Misc - Helpers
+"""Track - utilities
+This tool stores the hit from the client in all the appropriate places.
+@todo: Add JSON logging here probably.
 
 """
-
-import arrow
 from datetime import datetime
-import os
 
-from flask import request, g
+from flask import request
 from sqlalchemy.orm.exc import NoResultFound
 
 from app.models.web_request import WebRequest
 from app.models.uri import Uri
 from app.models.known_ip import KnownIp
-
-
-def get_uri_map():
-    """
-    Gets a dictionary of all currently registed uri routes. Available at g['uri_map']
-    @todo: Cache a serialized version of this some where in the local files system
-
-    :returns: The url map.
-    :rtype: dict
-    """
-    uris = Uri.query.all()
-    the_map = {}
-    if g.get('uri_map'):
-        return g.uri_map
-    for uri in uris:
-        the_map[uri.uri] = {
-            'uri_id': uri.id,
-            'response_type': uri.response_type,
-            'value': uri.meta_val
-        }
-    g.uri_map = the_map
-    return the_map
+from app.utilities import misc
 
 
 def record_hit():
@@ -54,10 +32,18 @@ def _record_uri():
     :rtype: <Uri>
     """
     requested_path = request.environ['PATH_INFO']
-    if requested_path in get_uri_map():
-        uri = Uri.query.filter(Uri.uri == requested_path).one()
+    if requested_path in misc.get_uri_map():
+        try:
+            uri = Uri.query.filter(Uri.uri == requested_path).one()
+            uri.hits = uri.hits + 1
+        except NoResultFound:
+            # This should be handled better, but happens when a file is requested that exists
+            # that is not a registed ui arg
+            uri = Uri()
+            uri.uri = requested_path
+            uri.response_type = 'non-mapped-uri'
+            uri.hits = 1
         uri.last_hit = datetime.utcnow()
-        uri.hits = uri.hits + 1
     else:
         uri = Uri()
         uri.uri = requested_path
@@ -113,20 +99,4 @@ def _record_web_request(uri_id, ip_id):
     wr.save()
 
 
-def date_format(view, value):
-    """
-    Need to figure out how to get local time here and convert from UTC to that.
-
-    :param view: Admin controller view.
-    :type view: FlaskAdminView obj
-    :param value: The UTC date to be converted to local time.
-    :type value: datetime
-    :returns: Converted datetime in pretty format.
-    :rtype: str
-    """
-    utc = arrow.get(value, 'UTC')
-    local = utc.to(os.environ.get('TZ'))
-    return local.humanize()
-    # return local.strftime('%b %d %Y %H:%M:%S')
-
-# End File: simple-honey/app/helpers/misc.py
+# End File: simple-honey/app/helpers/track.py

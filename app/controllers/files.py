@@ -5,7 +5,7 @@
 from flask import Blueprint, redirect, send_file, Response
 import os
 
-from app.helpers import misc
+from app.utilities import track
 
 files = Blueprint('Files', __name__, url_prefix='/files/')
 
@@ -20,7 +20,7 @@ def index(path):
     :param path: The path of the file to load.
     :type path: str
     """
-    misc.record_hit()
+    track.record_hit()
     file_path = os.path.join('/data/hosted_files/', path)
     if not os.path.exists(file_path):
         return redirect('files/404')
