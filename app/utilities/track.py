@@ -1,4 +1,6 @@
 """Track - utilities
+This tool stores the hit from the client in all the appropriate places.
+@todo: Add JSON logging here probably.
 
 """
 from datetime import datetime
@@ -39,7 +41,7 @@ def _record_uri():
             # that is not a registed ui arg
             uri = Uri()
             uri.uri = requested_path
-            uri.response__type = 'file'
+            uri.response_type = 'non-mapped-uri'
             uri.hits = 1
         uri.last_hit = datetime.utcnow()
     else:
