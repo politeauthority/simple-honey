@@ -19,7 +19,7 @@ class Uri(Base):
     response_type = Column(String(100))
     meta_val = Column(Text())
     requests = relationship('WebRequest', back_populates="uri")
-    hits = Column(Integer, default=1)
+    hits = Column(Integer, default=0)
 
     UniqueConstraint('uri', 'domain', name='uix_1')
 

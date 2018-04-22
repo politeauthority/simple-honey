@@ -45,9 +45,10 @@ def get_uri_map():
 
 def _get_file_uris():
     """
-    Grab all files on the hosted files directory and return
+    Grab all files on the hosted files directory and return.
 
-    :returns: All
+    :returns: All files from the hosted files area as a uri_map
+    :rtype: dict
     """
     hosted_files = os.listdir(os.environ.get('SH_HOSTED_FILE_URL'))
     the_map = {}
@@ -64,20 +65,21 @@ def _get_file_uris():
 
 def draw_file(path):
     """
-    Draws a file from the hosted files directory
+    Draws a file from the hosted files directory.
 
     :param path: The path of the file local to the hosted files directory.
     :type: path: str
+    :returns: File contents or redirect
     """
-    file_path = os.path.join(os.environ.get('SH_HOSTED_FILE_URL'), path)
+    file_path = os.path.join(os.environ.get('SH_HOSTED_FILES'), path)
     if not os.path.exists(file_path):
-        return redirect('files/404')
+        return redirect('/404')
 
     file_name = file_path[:file_path.rfind('/')]
     ext = file_name[file_name.rfind('.') + 1:].lower()
 
     mimetype = None
-    if ext in ['jpg', 'jpeg', 'gif', 'png']:
+    if ext in ['jpg', 'jpeg', 'gif', 'png', 'pdf']:
         mimetype = 'image/%s' % ext
 
     response = Response()
@@ -100,7 +102,6 @@ def date_format(view, value):
     utc = arrow.get(value, 'UTC')
     local = utc.to(os.environ.get('TZ'))
     return local.humanize()
-    # return local.strftime('%b %d %Y %H:%M:%S')
 
 
 def format_uri_to_webrequest_links(view, context, model, p):
