@@ -12,9 +12,8 @@ THREADS_PER_PAGE = 2
 
 # Use a secure, unique and absolutely secret key for
 # signing the data.
-CSRF_SESSION_KEY = "secret"
+SRF_SESSION_KEY = os.urandom(24)
+SECRET_KEY = os.urandom(24)
 
-# Secret key for signing cookies
-SECRET_KEY = "secret"
 
 APP_DATA_PATH = '/data/'

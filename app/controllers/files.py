@@ -12,6 +12,7 @@ files = Blueprint('Files', __name__, url_prefix='/files/')
 
 @files.route('', defaults={'path': ''})
 @files.route('<path:path>', methods=['GET', 'POST'])
+@track.record_uri
 def index(path):
     """
     /files/*
@@ -20,7 +21,8 @@ def index(path):
     :param path: The path of the file to load.
     :type path: str
     """
-    track.record_hit()
+    if not path:
+        return '', 200
     file_path = os.path.join('/data/hosted_files/', path)
     if not os.path.exists(file_path):
         return redirect('files/404')
@@ -39,6 +41,7 @@ def index(path):
 
 
 @files.route('404')
+@track.record_uri
 def error_404():
     """
     /files/404/

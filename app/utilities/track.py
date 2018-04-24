@@ -4,6 +4,7 @@ This tool stores the hit from the client in all the appropriate places.
 
 """
 from datetime import datetime
+from functools import wraps
 
 from flask import request
 from sqlalchemy.orm.exc import NoResultFound
@@ -22,6 +23,18 @@ def record_hit():
     uri = _record_uri()
     ip = _record_ip()
     _record_web_request(uri.id, ip.id)
+
+
+def record_uri(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        print('\n\n\n\n')
+        print(args)
+        print(kwargs)
+        print('\n\n\n')
+        record_hit()
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 def _record_uri():

@@ -3,6 +3,7 @@
 """
 from flask import Blueprint, request, redirect
 
+import app
 from app.utilities import misc
 from app.utilities import track
 
@@ -11,6 +12,7 @@ home = Blueprint('Home', __name__, url_prefix='/')
 
 @home.route('', defaults={'path': ''}, methods=['GET', 'POST'])
 @home.route('<path:path>', methods=['GET', 'POST'])
+@track.record_uri
 def index(path):
     """
     /*
@@ -20,7 +22,6 @@ def index(path):
     :type path: str
     """
     requested_path = '/' + path
-    track.record_hit()
     uri_map = misc.get_uri_map()
 
     if requested_path in uri_map:
@@ -29,6 +30,10 @@ def index(path):
             return misc.draw_file(req['value']), 200
         elif req['response_type'] == 'redirect':
             return redirect_client(req)
+    print(app.global_content)
+    print(app.global_content)
+    print(app.global_content)
+    print(app.global_content)
     return ''
 
 
@@ -44,24 +49,24 @@ def redirect_client(requested_uri):
 
 
 @home.route('ip', methods=['GET', 'POST'])
+@track.record_uri
 def ip():
     """
     /ip
     Fire off the requesting entities IP address
 
     """
-    track.record_hit()
     return str(request.remote_addr)
 
 
 @home.route('robots.txt', methods=['GET', 'POST'])
+@track.record_uri
 def robots():
     """
     /robots.txt
     Real simple robotos.txt file for the bots.
 
     """
-    track.record_hit()
     return """
 User-agent: *\n
 Disallow: /\n

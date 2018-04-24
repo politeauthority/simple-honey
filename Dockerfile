@@ -11,6 +11,7 @@ ENV SH_DB_NAME="simple_honey"
 ENV SH_ADMIN_URL="the-admin"
 ENV SH_HOSTED_FILES_URL="files"
 ENV SH_HOSTED_FILES="/data/hosted_files/"
+ENV SH_CACHE_FILE="/data/simple-honey.cache"
 ENV FLASK_APP="/opt/simple-honey/manage.py"
 ENV TZ=America/Denver
 

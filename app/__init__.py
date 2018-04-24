@@ -2,16 +2,18 @@
 Main file for the entire flask app.
 
 """
-import logging
+import _pickle as cPickle
 import os
-
+import logging
 from logging.handlers import TimedRotatingFileHandler
-from werkzeug.contrib.fixers import ProxyFix
 
-from flask import Flask, g
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_session import Session
 from flask_admin import Admin
 from flask_admin.contrib.fileadmin import FileAdmin
+from werkzeug.contrib.fixers import ProxyFix
+
 
 # import flask_restless
 
@@ -106,21 +108,33 @@ def register_options():
     Option.set_defaults(defaults)
 
 
-def load_options():
+def register_session(app):
     """
-    Loads all options and sets them into the Flask g object.
+    Creates the flask session.
 
+    :param app: Current Flask application
+    :type app: <Flask 'app'> obj
     """
-    g['options'] = Option.load_all()
+    sess = Session()
+    sess.init_app(app)
+    Session(app)
 
+
+def load_cached():
+    pickled_data = open(os.environ.get('SH_CACHE_FILE'), "rb")
+    return cPickle.load(pickled_data)
 
 db.create_all()
 
 register_logging(app)
+# register_session(app)
 register_blueprints(app)
 register_options()
-# load_options()
 admin = register_admin(app)
+global_content = load_cached()
+print('\n\n\n\n')
+print(global_content)
+print('\n\n\n\n')
 # register_api(app)
 
 app.logger.info('Started App')

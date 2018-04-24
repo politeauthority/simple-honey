@@ -18,6 +18,7 @@ class Option(Base):
         UniqueConstraint('name', name='uix_1'),
     )
 
+    @staticmethod
     def load_all():
         """
         Loads all options and stores them into the flask g object.
