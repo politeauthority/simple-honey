@@ -6,7 +6,7 @@ import urllib
 from jinja2 import Markup
 import os
 
-from app.models.option import Option
+import app
 
 
 def date(view, value):
@@ -27,7 +27,7 @@ def date(view, value):
 
 def uri_to_webrequest_links(view, context, model, p):
     """
-    Creats a link which searches on the WebRequest FlaskAdmin page for the Uri
+    Creates a link which searches on the WebRequest FlaskAdmin page for the Uri
 
     :param view: Flask Admin view.
     :type view: <UriModelView> obj
@@ -40,7 +40,7 @@ def uri_to_webrequest_links(view, context, model, p):
     :returns: Formatted link to a search on WebRequest Flask Admin page
     :rtype: str
     """
-    admin_url = Option.get('admin-url')
+    admin_url = app.global_content['options']['admin-url']
     args = {
         'search': model.uri
     }
@@ -54,7 +54,7 @@ def uri_to_webrequest_links(view, context, model, p):
 
 def webrequest_to_uri_links(view, context, model, p):
     """
-    Creats a link which searches on the WebRequest FlaskAdmin page for the Uri
+    Creates a link which searches on the WebRequest FlaskAdmin page for the Uri
 
     :param view: Flask Admin view.
     :type view: <UriModelView> obj
@@ -67,7 +67,7 @@ def webrequest_to_uri_links(view, context, model, p):
     :returns: Formatted link to a search on WebRequest Flask Admin page
     :rtype: str
     """
-    admin_url = Option.get('admin-url')
+    admin_url = app.global_content['options']['admin-url']
     args = {
         'search': model.uri.uri
     }
@@ -81,7 +81,7 @@ def webrequest_to_uri_links(view, context, model, p):
 
 def webrequest_to_ip_links(view, context, model, p):
     """
-    Creats a link which searches on the WebRequest FlaskAdmin page for the Uri
+    Creates a link which searches on the WebRequest FlaskAdmin page for the Uri
 
     :param view: Flask Admin view.
     :type view: <UriModelView> obj
@@ -94,7 +94,7 @@ def webrequest_to_ip_links(view, context, model, p):
     :returns: Formatted link to a search on WebRequest Flask Admin page
     :rtype: str
     """
-    admin_url = Option.get('admin-url')
+    admin_url = app.global_content['options']['admin-url']
     args = {
         'search': model.ip.ip
     }
@@ -104,3 +104,6 @@ def webrequest_to_ip_links(view, context, model, p):
         link_args,
         model.ip.ip)
     return Markup(the_link)
+
+
+# End File: simple-honey/app/utilities/formatters.py

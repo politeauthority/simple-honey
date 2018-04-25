@@ -26,6 +26,10 @@ def record_hit():
 
 
 def record_uri(f):
+    """
+    Decorator for recording hits on uris
+
+    """
     @wraps(f)
     def decorated_function(*args, **kwargs):
         print('\n\n\n\n')

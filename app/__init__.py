@@ -8,12 +8,12 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_session import Session
 from flask_admin import Admin
 from flask_admin.contrib.fileadmin import FileAdmin
+from flask_debugtoolbar import DebugToolbarExtension
+from flask_sqlalchemy import SQLAlchemy
+from flask_session import Session
 from werkzeug.contrib.fixers import ProxyFix
-
 
 # import flask_restless
 
@@ -31,7 +31,9 @@ from app.models.uri import Uri
 # Controllers
 from app.controllers.home import home as ctrl_home
 from app.controllers.files import files as ctrl_files
-from app.controllers.admin import WebRequestModelView, OptionModelView, KnownIpModelView, UriModelView
+from app.controllers.admin import WebRequestModelView, OptionModelView, KnownIpInfoView, KnownIpModelView, UriModelView
+
+from app.utilities import misc
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
@@ -87,11 +89,12 @@ def register_admin(app):
         name='Simple-Honey',
         template_mode='bootstrap3')
 
-    admin.add_view(UriModelView(Uri, db.session))
-    admin.add_view(WebRequestModelView(WebRequest, db.session))
-    admin.add_view(KnownIpModelView(KnownIp, db.session))
-    admin.add_view(FileAdmin(os.environ.get('SH_HOSTED_FILES'), '/files/', name='Hosted Files'))
-    admin.add_view(OptionModelView(Option, db.session))
+    admin.add_view(UriModelView(Uri, db.session, name="Uris"))
+    admin.add_view(WebRequestModelView(WebRequest, db.session, name="Web Requests"))
+    admin.add_view(KnownIpModelView(KnownIp, db.session, name="Known IPs"))
+    admin.add_view(FileAdmin(os.environ.get('SH_HOSTED_FILES'), name='Hosted Files'))
+    admin.add_view(OptionModelView(Option, db.session, name='Options'))
+    admin.add_view(KnownIpInfoView(endpoint='analytics', name='Analytics'))
 
     return admin
 
@@ -121,20 +124,22 @@ def register_session(app):
 
 
 def load_cached():
-    pickled_data = open(os.environ.get('SH_CACHE_FILE'), "rb")
+    try:
+        pickled_data = open(os.environ.get('SH_CACHE_FILE'), "rb")
+    except OSError:
+        misc.save_serialized_file()
+        pickled_data = open(os.environ.get('SH_CACHE_FILE'), "rb")
     return cPickle.load(pickled_data)
 
-db.create_all()
 
+db.create_all()
+DebugToolbarExtension(app)
 register_logging(app)
 # register_session(app)
 register_blueprints(app)
 register_options()
 admin = register_admin(app)
 global_content = load_cached()
-print('\n\n\n\n')
-print(global_content)
-print('\n\n\n\n')
 # register_api(app)
 
 app.logger.info('Started App')

@@ -7,7 +7,7 @@ SQLALCHEMY_DATABASE_URI = '%s://%s:%s@%s:%s' % (
     os.environ.get('SH_DB_HOST'),
     os.environ.get('SH_DB_PORT'))
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-DEBUG_TB_INTERCEPT_REDIRECTS = False
+DEBUG_TB_INTERCEPT_REDIRECTS = True
 THREADS_PER_PAGE = 2
 
 # Use a secure, unique and absolutely secret key for

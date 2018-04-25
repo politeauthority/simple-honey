@@ -8,6 +8,7 @@ ENV SH_DB_USER="User"
 ENV SH_DB_PASS="Pass"
 ENV SH_DB_PORT="5432"
 ENV SH_DB_NAME="simple_honey"
+ENV SH_ADMIN_PASSWORD="W8YcmXMWuTwth5tz"
 ENV SH_ADMIN_URL="the-admin"
 ENV SH_HOSTED_FILES_URL="files"
 ENV SH_HOSTED_FILES="/data/hosted_files/"
@@ -33,6 +34,7 @@ RUN apk add --no-cache \
 WORKDIR /opt/simple-honey/
 
 RUN pip3 install -r requirements.txt
-RUN mkdir -p $SH_HOSTED_FILES
+RUN mkdir -p ${SH_HOSTED_FILES}
+RUN touch ${SH_CACHE_FILE}
 
 CMD gunicorn -b 0.0.0.0:80 app:app
