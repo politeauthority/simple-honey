@@ -22,7 +22,7 @@ def index(path):
     :type path: str
     """
     requested_path = '/' + path
-    uri_map = misc.get_uri_map()
+    uri_map = app.global_content['uris']
 
     if requested_path in uri_map:
         req = uri_map[requested_path]
@@ -30,10 +30,6 @@ def index(path):
             return misc.draw_file(req['value']), 200
         elif req['response_type'] == 'redirect':
             return redirect_client(req)
-    print(app.global_content)
-    print(app.global_content)
-    print(app.global_content)
-    print(app.global_content)
     return ''
 
 
