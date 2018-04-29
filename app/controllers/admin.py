@@ -45,7 +45,7 @@ class SimpleHoneyModelView(ModelView):
         FlaskAdmin built in method for checking page accessibility.
 
         """
-        return True
+        return auth.check()
 
     def inaccessible_callback(self, name, **kwargs):
         """
