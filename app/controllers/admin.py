@@ -3,13 +3,17 @@
 """
 from datetime import date
 
+from flask import redirect
 from flask_admin import BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.model import typefmt
 from flask_admin.form import SecureForm
+from flask_admin.contrib.fileadmin import FileAdmin
 from wtforms import validators
 
-from app.utilities import misc
+from app.controllers import authenticate
+from app.utilities import auth
+from app.utilities import common
 from app.utilities import formatters
 
 
@@ -31,10 +35,67 @@ def refresh_cache_file(form, model, is_created):
     :param is_created:
     :type is_created: bool
     """
-    misc.save_serialized_file()
+    common.save_serialized_file()
 
 
-class UriModelView(ModelView):
+class SimpleHoneyModelView(ModelView):
+
+    def is_accessible(self):
+        """
+        FlaskAdmin built in method for checking page accessibility.
+
+        """
+        return True
+
+    def inaccessible_callback(self, name, **kwargs):
+        """
+        FlaskAdmin built in method is user doesnt have access
+
+        """
+        return redirect(common.admin_uri(), 403)
+
+
+class SimpleHoneyAdminAuthView(BaseView):
+
+    @expose('/')
+    def logout(self):
+        return authenticate.flask_admin_auth()
+
+    def is_accessible(self):
+        """
+        FlaskAdmin built in method for checking page accessibility.
+
+        """
+        return auth.check()
+
+    def inaccessible_callback(self, name, **kwargs):
+        """
+        FlaskAdmin built in method is user doesnt have access
+
+        """
+        # redirect to login page if user doesn't have access
+        return redirect(common.admin_uri(), 403)
+
+
+class SimpleHoneyFileAdmin(FileAdmin):
+
+    def is_accessible(self):
+        """
+        FlaskAdmin built in method for checking page accessibility.
+
+        """
+        return auth.check()
+
+    def inaccessible_callback(self, name, **kwargs):
+        """
+        FlaskAdmin built in method is user doesnt have access
+
+        """
+        # redirect to login page if user doesn't have access
+        return redirect(common.admin_uri(), 403)
+
+
+class UriModelView(SimpleHoneyModelView):
     """
     View Class for URIs
 
@@ -65,7 +126,7 @@ class UriModelView(ModelView):
     on_model_change = refresh_cache_file
 
 
-class WebRequestModelView(ModelView):
+class WebRequestModelView(SimpleHoneyModelView):
     """
     View Class for WebRequests
 
@@ -86,7 +147,7 @@ class WebRequestModelView(ModelView):
     form_excluded_columns = ['ts_created', 'ts_updated', 'requests']
 
 
-class KnownIpModelView(ModelView):
+class KnownIpModelView(SimpleHoneyModelView):
     """
     View Class for KnownIps
 
@@ -102,12 +163,12 @@ class KnownIpModelView(ModelView):
     form_excluded_columns = ['ts_created', 'ts_updated', 'requests']
 
 
-class OptionModelView(ModelView):
+class OptionModelView(SimpleHoneyModelView):
     """
     View Class for Options
 
     """
-    can_delete = False
+    can_delete = True
     can_create = False
     page_size = 25
     column_type_formatters = MY_DEFAULT_FORMATTERS

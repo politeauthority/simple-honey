@@ -8,10 +8,11 @@ Currently installs at around 256 MB.
 docker build -t simple-honey .
 docker run \
     --name=simple-honey \
-    -e SH_DB_HOST="HOST" \
-    -e SH_DB_USER="USER" \
-    -e SH_DB_PASS="PASS" \
-    -e VIRTUAL_HOST='simpe-honey.example.com' \
+    -e SH_DB_USER="root" \
+    -e SH_DB_PASS="RdYy0aM2GOzGWRgL" \
+    -e SH_ADMIN_URL="xFPL30NcqhNwrWDY" \
+    -e SH_ADMIN_PASS="Mj5UO6dEXtihNalZ" \
+    -e VIRTUAL_HOST='example.com,*.other-example.com' \
     -td \
     --restart=always \
     simple-honey
@@ -26,7 +27,9 @@ ENV Var | Default | Description
 `SH_DB_HOST` | some-postgres | Database host
 `SH_DB_PORT` | 5432 | Database host
 `SH_DB_NAME`  | simple_honey | Database name
-`SH_ADMIN_URL` | 'the-admin' | URI for admin
+`SH_ADMIN_URL` | the-admin | Your chosen URI for admin
+`SH_ADMIN_USER` | admin | Your chosen user for the admin.
+`SH_ADMIN_PASS` | W8YcmXMWuTwth5tz | Your chosen password for the admin.
 `SH_HOSTED_FILES_URL` | files | URI for hosted files
 `SH_HOSTED_FILES` | /data/hosted_files | Path for uploaded files for the server to host
 `VIRTUAL_HOST`  |  *None*  | URL the Nginx proxy will route to this container

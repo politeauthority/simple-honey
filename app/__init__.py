@@ -9,7 +9,7 @@ from logging.handlers import TimedRotatingFileHandler
 
 from flask import Flask
 from flask_admin import Admin
-from flask_admin.contrib.fileadmin import FileAdmin
+from werkzeug.security import generate_password_hash
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
@@ -30,10 +30,12 @@ from app.models.uri import Uri
 
 # Controllers
 from app.controllers.home import home as ctrl_home
+from app.controllers.authenticate import authenticate as ctrl_auth
 from app.controllers.files import files as ctrl_files
-from app.controllers.admin import WebRequestModelView, OptionModelView, KnownIpModelView, UriModelView
+from app.controllers.admin import WebRequestModelView, OptionModelView, KnownIpModelView, UriModelView, \
+    SimpleHoneyAdminAuthView, SimpleHoneyFileAdmin
 
-from app.utilities import misc
+from app.utilities import common
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
@@ -67,6 +69,7 @@ def register_blueprints(app):
     """
     app.register_blueprint(ctrl_files)
     app.register_blueprint(ctrl_home)
+    app.register_blueprint(ctrl_auth)
 
 
 def register_admin(app):
@@ -92,8 +95,9 @@ def register_admin(app):
     admin.add_view(UriModelView(Uri, db.session, name="Uris"))
     admin.add_view(WebRequestModelView(WebRequest, db.session, name="Web Requests"))
     admin.add_view(KnownIpModelView(KnownIp, db.session, name="Known IPs"))
-    admin.add_view(FileAdmin(os.environ.get('SH_HOSTED_FILES'), name='Hosted Files'))
+    admin.add_view(SimpleHoneyFileAdmin(os.environ.get('SH_HOSTED_FILES'), name='Hosted Files'))
     admin.add_view(OptionModelView(Option, db.session, name='Options'))
+    admin.add_view(SimpleHoneyAdminAuthView(name="Logout", endpoint='/auth/logout'))
 
     return admin
 
@@ -105,7 +109,9 @@ def register_options():
     """
     defaults = {
         'admin-url': os.environ.get('SH_ADMIN_URL'),
-        'hosted-file-url': os.environ.get('SH_HOSTED_FILES_URL')
+        'hosted-file-url': os.environ.get('SH_HOSTED_FILES_URL'),
+        'admin-user': os.environ.get('SH_ADMIN_USER'),
+        'admin-pass': generate_password_hash(os.environ.get('SH_ADMIN_PASS'))
     }
     Option.set_defaults(defaults)
 
@@ -126,7 +132,7 @@ def load_cached():
     try:
         pickled_data = open(os.environ.get('SH_CACHE_FILE'), "rb")
     except OSError:
-        misc.save_serialized_file()
+        common.save_serialized_file()
         pickled_data = open(os.environ.get('SH_CACHE_FILE'), "rb")
     return cPickle.load(pickled_data)
 
@@ -134,7 +140,7 @@ def load_cached():
 db.create_all()
 DebugToolbarExtension(app)
 register_logging(app)
-# register_session(app)
+register_session(app)
 register_blueprints(app)
 register_options()
 admin = register_admin(app)
