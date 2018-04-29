@@ -12,8 +12,10 @@ THREADS_PER_PAGE = 2
 
 # Use a secure, unique and absolutely secret key for
 # signing the data.
-SRF_SESSION_KEY = os.urandom(24)
-SECRET_KEY = os.urandom(24)
+SRF_SESSION_KEY = '2342423423434'
+SESSION_TYPE = 'filesystem'
+SECRET_KEY = '3453535346767345'
 
 
 APP_DATA_PATH = '/data/'
+SESSION_FILE_DIR = APP_DATA_PATH

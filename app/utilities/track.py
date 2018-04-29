@@ -12,7 +12,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from app.models.web_request import WebRequest
 from app.models.uri import Uri
 from app.models.known_ip import KnownIp
-from app.utilities import misc
+from app.utilities import common
 
 
 def record_hit():
@@ -25,17 +25,13 @@ def record_hit():
     _record_web_request(uri.id, ip.id)
 
 
-def record_uri(f):
+def record_before_hit(f):
     """
     Decorator for recording hits on uris
 
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        print('\n\n\n\n')
-        print(args)
-        print(kwargs)
-        print('\n\n\n')
         record_hit()
         return f(*args, **kwargs)
     return decorated_function
@@ -49,7 +45,7 @@ def _record_uri():
     :rtype: <Uri>
     """
     requested_path = request.environ['PATH_INFO']
-    if requested_path in misc.get_uri_map():
+    if requested_path in common.get_uri_map():
         try:
             uri = Uri.query.filter(Uri.uri == requested_path).one()
             uri.hits = uri.hits + 1

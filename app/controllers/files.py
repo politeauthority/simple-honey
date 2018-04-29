@@ -12,7 +12,7 @@ files = Blueprint('Files', __name__, url_prefix='/files/')
 
 @files.route('', defaults={'path': ''})
 @files.route('<path:path>', methods=['GET', 'POST'])
-@track.record_uri
+@track.record_before_hit
 def index(path):
     """
     /files/*
@@ -41,7 +41,7 @@ def index(path):
 
 
 @files.route('404')
-@track.record_uri
+@track.record_before_hit
 def error_404():
     """
     /files/404/

@@ -1,4 +1,4 @@
-"""Misc - Utilities
+"""Common - Utilities
 
 """
 import os
@@ -6,6 +6,7 @@ import pickle
 
 from flask import send_file, redirect, Response
 
+import app
 from app.models.uri import Uri
 from app.models.option import Option
 
@@ -98,4 +99,13 @@ def save_serialized_file():
         pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-# End File: simple-honey/app/utilities/misc.py
+def admin_uri():
+    """
+    Helper fucntion to get the admin url quickly
+
+    :returns: admin url, redirect or print friendly
+    :rtype: string
+    """
+    return '/' + app.global_content['options']['admin-url'].value
+
+# End File: simple-honey/app/utilities/common.py

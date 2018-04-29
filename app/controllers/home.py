@@ -4,7 +4,7 @@
 from flask import Blueprint, request, redirect
 
 import app
-from app.utilities import misc
+from app.utilities import common
 from app.utilities import track
 
 home = Blueprint('Home', __name__, url_prefix='/')
@@ -12,7 +12,7 @@ home = Blueprint('Home', __name__, url_prefix='/')
 
 @home.route('', defaults={'path': ''}, methods=['GET', 'POST'])
 @home.route('<path:path>', methods=['GET', 'POST'])
-@track.record_uri
+@track.record_before_hit
 def index(path):
     """
     /*
@@ -27,7 +27,7 @@ def index(path):
     if requested_path in uri_map:
         req = uri_map[requested_path]
         if req['response_type'] == 'file':
-            return misc.draw_file(req['value']), 200
+            return common.draw_file(req['value']), 200
         elif req['response_type'] == 'redirect':
             return redirect_client(req)
     return ''
@@ -45,7 +45,7 @@ def redirect_client(requested_uri):
 
 
 @home.route('ip', methods=['GET', 'POST'])
-@track.record_uri
+@track.record_before_hit
 def ip():
     """
     /ip
@@ -56,7 +56,7 @@ def ip():
 
 
 @home.route('robots.txt', methods=['GET', 'POST'])
-@track.record_uri
+@track.record_before_hit
 def robots():
     """
     /robots.txt
