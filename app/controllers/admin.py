@@ -3,6 +3,7 @@
 """
 from datetime import date
 
+from flask_admin import BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.model import typefmt
 from flask_admin.form import SecureForm
@@ -98,7 +99,7 @@ class KnownIpModelView(ModelView):
     column_default_sort = ('ts_created', True)
 
     form_base_class = SecureForm
-    form_excluded_columns = ['ts_created', 'ts_updated']
+    form_excluded_columns = ['ts_created', 'ts_updated', 'requests']
 
 
 class OptionModelView(ModelView):
@@ -117,5 +118,6 @@ class OptionModelView(ModelView):
     form_base_class = SecureForm
     form_excluded_columns = ['ts_created', 'ts_updated']
     on_model_change = refresh_cache_file
+
 
 # End File: simple-honey/app/controllers/admin.py
