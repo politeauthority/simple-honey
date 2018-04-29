@@ -19,16 +19,16 @@ def index():
 
     """
     if not request.form.get('username') or not request.form.get('password'):
-        return redirect('/failed-login1', 403)
+        return redirect('/failed-login', 403)
 
     if auth.check():
-        return redirect('/the-admin')
+        return redirect(common.admin_uri())
 
     login = auth.login(request.form['username'], request.form['password'])
     if not login:
-        return redirect('/failed-login2', 403)
+        return redirect('/failed-login', 403)
 
-    return redirect('/the-admin')
+    return redirect(common.admin_uri())
 
 
 @authenticate.route('/logout')
