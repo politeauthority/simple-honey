@@ -31,7 +31,7 @@ from app.models.uri import Uri
 # Controllers
 from app.controllers.home import home as ctrl_home
 from app.controllers.files import files as ctrl_files
-from app.controllers.admin import WebRequestModelView, OptionModelView, KnownIpInfoView, KnownIpModelView, UriModelView
+from app.controllers.admin import WebRequestModelView, OptionModelView, KnownIpModelView, UriModelView
 
 from app.utilities import misc
 
@@ -94,7 +94,6 @@ def register_admin(app):
     admin.add_view(KnownIpModelView(KnownIp, db.session, name="Known IPs"))
     admin.add_view(FileAdmin(os.environ.get('SH_HOSTED_FILES'), name='Hosted Files'))
     admin.add_view(OptionModelView(Option, db.session, name='Options'))
-    admin.add_view(KnownIpInfoView(endpoint='analytics', name='Analytics'))
 
     return admin
 
