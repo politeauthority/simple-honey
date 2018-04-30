@@ -17,7 +17,7 @@ from werkzeug.contrib.fixers import ProxyFix
 
 # import flask_restless
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="/static", static_folder="static")
 app.config.from_pyfile('config/dev.py')
 db = SQLAlchemy(app)
 
@@ -111,7 +111,8 @@ def register_options():
         'admin-url': os.environ.get('SH_ADMIN_URL'),
         'hosted-file-url': os.environ.get('SH_HOSTED_FILES_URL'),
         'admin-user': os.environ.get('SH_ADMIN_USER'),
-        'admin-pass': generate_password_hash(os.environ.get('SH_ADMIN_PASS'))
+        'admin-pass': generate_password_hash(os.environ.get('SH_ADMIN_PASS')),
+        'google-analytics': None,
     }
     Option.set_defaults(defaults)
 

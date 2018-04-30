@@ -20,12 +20,6 @@ def login(username, password):
     :returns: Success or failure of login opperation
     :rtype: bool
     """
-    print("\n\n\n\n")
-    print(app.global_content['options']['admin-pass'].value)
-    print(password)
-    print(app.global_content['options']['admin-user'].value)
-    print(username)
-    print(check_password_hash(app.global_content['options']['admin-pass'].value, password))
     if (
             app.global_content['options']['admin-user'].value == username and
             check_password_hash(app.global_content['options']['admin-pass'].value, password)):
