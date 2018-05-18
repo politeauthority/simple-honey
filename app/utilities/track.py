@@ -71,10 +71,15 @@ def _get_the_uri_record(requested_path):
     """
     matched_uri = common.match_uri(requested_path)
     if matched_uri:
-        uri = Uri.query.filter(Uri.id == matched_uri['uri_id']).one()
+        try:
+            uri = Uri.query.filter(Uri.id == matched_uri['uri_id']).one()
+            return uri
+        except NoResultFound:
+            uri = _create_unregistered_uri(requested_path)
+            return uri
     else:
         uri = _create_unregistered_uri(requested_path)
-    return uri
+        return uri
 
 
 def _create_unregistered_uri(requested_path):
