@@ -176,7 +176,7 @@ class OptionModelView(SimpleHoneyModelView):
     column_type_formatters = MY_DEFAULT_FORMATTERS
     column_exclude_list = ['ts_created']
     column_list = ['name', 'value', 'ts_updated']
-    column_default_sort = ('ts_updated', True)
+    column_default_sort = ('last_seen', True)
 
     form_base_class = SecureForm
     form_excluded_columns = ['ts_created', 'ts_updated']

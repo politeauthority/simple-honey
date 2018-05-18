@@ -128,8 +128,10 @@ def save_serialized_file():
 
 def load_cached():
     """
-    Loads the cache file if it exists, or creates it.
+    Loads the cache file for options in and uri mapping, if it exists, or it creates it.
 
+    :returns: The cached data.
+    :rtype: dict:
     """
     try:
         pickled_data = open(os.environ.get('SH_CACHE_FILE'), "rb")
