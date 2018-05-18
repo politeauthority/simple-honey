@@ -1,7 +1,7 @@
 """WebRequest - MODEL
 
 """
-from sqlalchemy import Column, String, PickleType, Text, Integer, ForeignKey
+from sqlalchemy import Column, String, PickleType, Text, Integer, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from app.models.base import Base
@@ -24,5 +24,7 @@ class WebRequest(Base):
     ip = relationship("KnownIp", back_populates="requests")
     uri_id = Column(Integer, ForeignKey('uris.id'))
     uri = relationship("Uri", back_populates="requests")
+
+    UniqueConstraint('uri', 'domain', name='uix_1')
 
 # End File: simple-honey/app/models/web_request.py

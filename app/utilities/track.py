@@ -46,16 +46,7 @@ def _record_uri():
     """
     requested_path = request.environ['PATH_INFO']
     if requested_path in common.get_uri_map():
-        try:
-            uri = Uri.query.filter(Uri.uri == requested_path).one()
-            uri.hits = uri.hits + 1
-        except NoResultFound:
-            # This should be handled better, but happens when a file is requested that exists
-            # that is not a registed ui arg
-            uri = Uri()
-            uri.uri = requested_path
-            uri.response_type = 'non-mapped-uri'
-            uri.hits = 1
+        uri = _get_the_uri_record(requested_path)
         uri.last_hit = datetime.utcnow()
     else:
         uri = Uri()
@@ -64,6 +55,48 @@ def _record_uri():
     uri.last_hit = datetime.utcnow()
     uri.save()
     return uri
+
+
+def _get_the_uri_record(requested_path):
+    """
+    Checks the system to see if the client requested URI is registed in the system, based on the uri and domain.
+
+    :param requested_path: The path the client requested.
+    :type requested_path: str
+    """
+    try:
+        uris = Uri.query.filter(Uri.uri == requested_path).all()
+        if len(uris) > 1:
+            print('requested: %s' % request.url_root)
+            for t_uri in uris:
+                print(t_uri.domain)
+                print(_requested_domain())
+                if t_uri.domain == _requested_domain():
+                    uri = t_uri
+        else:
+            uri = uris[0]
+        uri.hits = uri.hits + 1
+    except NoResultFound:
+        # This should be handled better, but happens when a file is requested that exists
+        # that is not a registed ui arg
+        uri = Uri()
+        uri.uri = requested_path
+        uri.response_type = 'non-mapped-uri'
+        uri.hits = 1
+    return uri
+
+
+def _requested_domain():
+    """
+    Gets the cleaned up domain requested by the client, to compare against records in the uri table.
+
+    :returns: Simplified domain without protical or port requested.
+    :rtype: str
+    """
+    domain = request.url_root.replace('http://', '').replace('https://', '')
+    if ':' in domain:
+        domain = domain[:domain.find(':')]
+    return domain
 
 
 def _record_ip():

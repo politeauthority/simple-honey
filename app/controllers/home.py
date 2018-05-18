@@ -26,7 +26,7 @@ def index(path):
     if requested_path in uri_map:
         req = uri_map[requested_path]
         if req['response_type'] == 'file':
-            return draw.draw_file(req['value']), 200
+            return draw.file(req['value']), 200
         elif req['response_type'] == 'redirect':
             return draw.redirect_client(req)
         elif req['response_type'] == 'image_center':
