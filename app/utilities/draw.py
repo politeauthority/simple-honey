@@ -74,7 +74,7 @@ def nothing():
     return render_template('boiler.html', **data)
 
 
-def draw_raw_content(requested_uri):
+def raw_content(requested_uri):
     """
     Renders raw text to the client, like a public key or something pretty basic.
 

@@ -65,9 +65,11 @@ def webrequest_to_uri_links(view, context, model, p):
     :param p: ?
     :type: p: ?
     :returns: Formatted link to a search on WebRequest Flask Admin page
-    :rtype: str
+    :rtype: str or None
     """
     admin_url = app.global_content['options']['admin-url']
+    if not model.uri:
+        return None
     args = {
         'search': model.uri.uri
     }

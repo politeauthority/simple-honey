@@ -35,7 +35,7 @@ def refresh_cache_file(form, model, is_created):
     :param is_created:
     :type is_created: bool
     """
-    common.save_serialized_file()
+    common.refresh_cache_file()
 
 
 class SimpleHoneyModelView(ModelView):
@@ -102,7 +102,7 @@ class UriModelView(SimpleHoneyModelView):
     """
     page_size = 25
     column_type_formatters = MY_DEFAULT_FORMATTERS
-    column_list = ['uri', 'name', 'last_hit', 'hits', 'response_type']
+    column_list = ['domain', 'uri', 'name', 'last_hit', 'hits', 'response_type']
     column_formatters = dict(uri=formatters.uri_to_webrequest_links)
     column_searchable_list = ['uri', 'name']
     column_exclude_list = ['ts_updated']
@@ -142,7 +142,7 @@ class WebRequestModelView(SimpleHoneyModelView):
         'uri.uri': formatters.webrequest_to_uri_links
     }
     column_searchable_list = ['uri.uri', 'user_agent', 'domain', 'uri.uri']
-    column_list = ['ip.ip', 'uri.uri', 'user_agent', 'domain', 'ts_created']
+    column_list = ['ip.ip', 'domain', 'uri.uri', 'user_agent', 'ts_created']
     column_default_sort = ('ts_created', True)
 
     form_base_class = SecureForm

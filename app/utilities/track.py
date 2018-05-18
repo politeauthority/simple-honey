@@ -51,6 +51,9 @@ def _record_uri():
     else:
         uri = Uri()
         uri.uri = requested_path
+    if uri.hits:
+        uri.hits = uri.hits + 1
+    else:
         uri.hits = 1
     uri.last_hit = datetime.utcnow()
     uri.save()
@@ -63,40 +66,39 @@ def _get_the_uri_record(requested_path):
 
     :param requested_path: The path the client requested.
     :type requested_path: str
+    :returns: A Uri representing the request.
+    :rtype: <Uri> object
     """
     try:
         uris = Uri.query.filter(Uri.uri == requested_path).all()
         if len(uris) > 1:
-            print('requested: %s' % request.url_root)
             for t_uri in uris:
-                print(t_uri.domain)
-                print(_requested_domain())
-                if t_uri.domain == _requested_domain():
+                if t_uri.domain == common.requested_domain():
                     uri = t_uri
+                    return uri
+            uri = _create_unregistered_uri(requested_path)
         else:
             uri = uris[0]
-        uri.hits = uri.hits + 1
     except NoResultFound:
         # This should be handled better, but happens when a file is requested that exists
         # that is not a registed ui arg
-        uri = Uri()
-        uri.uri = requested_path
-        uri.response_type = 'non-mapped-uri'
-        uri.hits = 1
+        uri = _create_unregistered_uri(requested_path)
     return uri
 
 
-def _requested_domain():
+def _create_unregistered_uri(requested_path):
     """
-    Gets the cleaned up domain requested by the client, to compare against records in the uri table.
+    Creates a URI if the uri is not currently known to Simple-Honey.
 
-    :returns: Simplified domain without protical or port requested.
-    :rtype: str
+    :param requested_path: The path the client requested.
+    :type requested_path: str
     """
-    domain = request.url_root.replace('http://', '').replace('https://', '')
-    if ':' in domain:
-        domain = domain[:domain.find(':')]
-    return domain
+    uri = Uri()
+    uri.uri = requested_path
+    uri.response_type = 'non-mapped-uri'
+    uri.domain = common.requested_domain()
+
+    return uri
 
 
 def _record_ip():
