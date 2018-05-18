@@ -4,8 +4,6 @@
 import os
 import pickle
 
-from flask import send_file, redirect, Response
-
 import app
 from app.models.uri import Uri
 from app.models.option import Option
@@ -58,31 +56,6 @@ def _get_file_uris():
             'value': None,
         }
     return the_map
-
-
-def draw_file(path):
-    """
-    Draws a file from the hosted files directory.
-
-    :param path: The path of the file local to the hosted files directory.
-    :type: path: str
-    :returns: File contents or redirect
-    """
-    file_path = os.path.join(os.environ.get('SH_HOSTED_FILES'), path)
-    if not os.path.exists(file_path):
-        return redirect('/404')
-
-    file_name = file_path[:file_path.rfind('/')]
-    ext = file_name[file_name.rfind('.') + 1:].lower()
-
-    mimetype = None
-    if ext in ['jpg', 'jpeg', 'gif', 'png', 'pdf']:
-        mimetype = 'image/%s' % ext
-
-    response = Response()
-    response.headers['Content-Type'] = mimetype
-
-    return send_file(file_path, mimetype=mimetype)
 
 
 def save_serialized_file():

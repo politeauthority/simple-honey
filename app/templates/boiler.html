@@ -22,12 +22,10 @@
         <script src="static/js/plugins.js"></script>
         <script src="static/js/main.js"></script>
         {%block javascript%}{%endblock%}
-
-        <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
-        {%if options.get('google-analytics')%}
+        {%if options.get('google-analytics') and not config.DEBUG%}
             <script>
                 window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
-                ga('create','{{options['google-analytics'].value}},'auto');ga('send','pageview')
+                ga('create','{{options['google-analytics'].value}},'auto');ga('send','pageview');
             </script>
             <script src="https://www.google-analytics.com/analytics.js" async defer></script>
         {%endif%}
