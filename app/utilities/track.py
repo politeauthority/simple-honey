@@ -46,23 +46,58 @@ def _record_uri():
     """
     requested_path = request.environ['PATH_INFO']
     if requested_path in common.get_uri_map():
-        try:
-            uri = Uri.query.filter(Uri.uri == requested_path).one()
-            uri.hits = uri.hits + 1
-        except NoResultFound:
-            # This should be handled better, but happens when a file is requested that exists
-            # that is not a registed ui arg
-            uri = Uri()
-            uri.uri = requested_path
-            uri.response_type = 'non-mapped-uri'
-            uri.hits = 1
+        uri = _get_the_uri_record(requested_path)
         uri.last_hit = datetime.utcnow()
     else:
         uri = Uri()
         uri.uri = requested_path
+    if uri.hits:
+        uri.hits = uri.hits + 1
+    else:
         uri.hits = 1
     uri.last_hit = datetime.utcnow()
     uri.save()
+    return uri
+
+
+def _get_the_uri_record(requested_path):
+    """
+    Checks the system to see if the client requested URI is registed in the system, based on the uri and domain.
+
+    :param requested_path: The path the client requested.
+    :type requested_path: str
+    :returns: A Uri representing the request.
+    :rtype: <Uri> object
+    """
+    try:
+        uris = Uri.query.filter(Uri.uri == requested_path).all()
+        if len(uris) > 1:
+            for t_uri in uris:
+                if t_uri.domain == common.requested_domain():
+                    uri = t_uri
+                    return uri
+            uri = _create_unregistered_uri(requested_path)
+        else:
+            uri = uris[0]
+    except NoResultFound:
+        # This should be handled better, but happens when a file is requested that exists
+        # that is not a registed ui arg
+        uri = _create_unregistered_uri(requested_path)
+    return uri
+
+
+def _create_unregistered_uri(requested_path):
+    """
+    Creates a URI if the uri is not currently known to Simple-Honey.
+
+    :param requested_path: The path the client requested.
+    :type requested_path: str
+    """
+    uri = Uri()
+    uri.uri = requested_path
+    uri.response_type = 'non-mapped-uri'
+    uri.domain = common.requested_domain()
+
     return uri
 
 

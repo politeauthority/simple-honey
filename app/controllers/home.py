@@ -3,9 +3,9 @@
 """
 from flask import Blueprint, request
 
-import app
 from app.utilities import track
 from app.utilities import draw
+from app.utilities import common
 
 home = Blueprint('Home', __name__, url_prefix='/')
 
@@ -17,22 +17,23 @@ def index(path):
     """
     /*
     Index
+    This is the main routing method for Simple-Honey. We load up the cached app uris and send the client to where they
+    need to go.
 
     :param path: url extensions
     :type path: str
     """
     requested_path = '/' + path
-    uri_map = app.global_content['uris']
-    if requested_path in uri_map:
-        req = uri_map[requested_path]
-        if req['response_type'] == 'file':
-            return draw.draw_file(req['value']), 200
-        elif req['response_type'] == 'redirect':
-            return draw.redirect_client(req)
-        elif req['response_type'] == 'image_center':
-            return draw.template_image_center(req)
-        elif req['response_type'] == 'raw_content':
-            return draw.raw_content(req)
+    matched_uri_path = common.match_uri(requested_path)
+    if matched_uri_path:
+        if matched_uri_path['response_type'] == 'file':
+            return draw.file(matched_uri_path['value'])
+        elif matched_uri_path['response_type'] == 'redirect':
+            return draw.redirect_client(matched_uri_path), 301
+        elif matched_uri_path['response_type'] == 'image_center':
+            return draw.template_image_center(matched_uri_path)
+        elif matched_uri_path['response_type'] == 'raw_content':
+            return draw.raw_content(matched_uri_path)
     return draw.nothing()
 
 

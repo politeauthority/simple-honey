@@ -130,12 +130,13 @@ def register_session(app):
 
 
 def load_cached():
-    try:
-        pickled_data = open(os.environ.get('SH_CACHE_FILE'), "rb")
-    except OSError:
-        common.save_serialized_file()
-        pickled_data = open(os.environ.get('SH_CACHE_FILE'), "rb")
-    return cPickle.load(pickled_data)
+    """
+    Loads the cache file if it exists, or creates it.
+
+    :returns: Loaded cache.
+    :rtype dict:
+    """
+    return common.load_cached()
 
 
 db.create_all()
