@@ -76,7 +76,8 @@ def match_uri(requested_path):
         uri_key_with_domain = strip_extra_slashes("%s/%s" % (requested_domain(), requested_path))
         if uri_key_with_domain == uri:
             return info
-        elif uri == requested_path:
+    for uri, info in uri_map.items():
+        if uri == requested_path:
             return info
     return None
 

@@ -69,19 +69,10 @@ def _get_the_uri_record(requested_path):
     :returns: A Uri representing the request.
     :rtype: <Uri> object
     """
-    try:
-        uris = Uri.query.filter(Uri.uri == requested_path).all()
-        if len(uris) > 1:
-            for t_uri in uris:
-                if t_uri.domain == common.requested_domain():
-                    uri = t_uri
-                    return uri
-            uri = _create_unregistered_uri(requested_path)
-        else:
-            uri = uris[0]
-    except NoResultFound:
-        # This should be handled better, but happens when a file is requested that exists
-        # that is not a registed ui arg
+    matched_uri = common.match_uri(requested_path)
+    if matched_uri:
+        uri = Uri.query.filter(Uri.id == matched_uri['uri_id']).one()
+    else:
         uri = _create_unregistered_uri(requested_path)
     return uri
 
