@@ -24,7 +24,7 @@ def index(path):
     if not path:
         return '', 200
     file_path = os.path.join('/data/hosted_files/', path)
-    if not os.path.exists(file_path):
+    if not os.path.exists(file_path) or os.path.isdir(file_path):
         return redirect('files/404')
 
     file_name = file_path[:file_path.rfind('/')]

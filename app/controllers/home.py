@@ -34,6 +34,8 @@ def index(path):
             return draw.template_image_center(matched_uri_path)
         elif matched_uri_path['response_type'] == 'raw_content':
             return draw.raw_content(matched_uri_path)
+        elif matched_uri_path['response_type'] == 'custom_template':
+            return draw.custom_template(matched_uri_path)
     return draw.nothing()
 
 

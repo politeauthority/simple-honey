@@ -36,6 +36,7 @@ WORKDIR /opt/simple-honey/
 
 RUN pip3 install -r requirements.txt
 RUN mkdir -p ${SH_HOSTED_FILES}
+RUN mkdir -p ${SH_HOSTED_FILES}/templates
 RUN mkdir -p /data/cache/
 RUN touch ${SH_CACHE_FILE}
 

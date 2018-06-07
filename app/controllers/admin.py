@@ -117,6 +117,7 @@ class UriModelView(SimpleHoneyModelView):
             ('redirect', 'Redirect'),
             ('image_center', 'Image Centered'),
             ('raw_content', 'Raw Content'),
+            ('custom_template', 'Custom Template'),
         ]
     }
     form_args = {

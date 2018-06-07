@@ -96,4 +96,11 @@ def redirect_client(requested_uri):
     """
     return redirect(requested_uri['value'], 301)
 
+def custom_template(requested_uri):
+    tempalte_path = os.path.join('/data/hosted_files/templates', requested_uri['value'])
+    if not os.path.exists(tempalte_path):
+        return nothing()
+    phile = open(tempalte_path)
+    return phile.read()
+
 # End File: simple-honey/app/utilities/draw.py
