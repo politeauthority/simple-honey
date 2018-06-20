@@ -4,7 +4,6 @@
 import arrow
 import urllib
 from jinja2 import Markup
-import os
 
 import app
 
@@ -21,7 +20,10 @@ def date(view, value):
     :rtype: str
     """
     utc = arrow.get(value, 'UTC')
-    local = utc.to(os.environ.get('TZ'))
+    try:
+        local = utc.to(app.global_content['options']['display-timezone'].value)
+    except arrow.parser.ParserError:
+        local = utc
     return local.humanize()
 
 

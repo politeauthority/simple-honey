@@ -119,8 +119,10 @@ def register_options():
         'admin-user': os.environ.get('SH_ADMIN_USER'),
         'admin-pass': generate_password_hash(os.environ.get('SH_ADMIN_PASS')),
         'google-analytics': None,
+        'display-timezone': 'America/Denver',
     }
     Option.set_defaults(defaults)
+    common.save_serialized_file()
 
 
 def register_session(app):
