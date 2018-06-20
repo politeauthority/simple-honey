@@ -53,10 +53,12 @@ def register_logging(app):
     :param app: Current Flask application
     :type app: <Flask 'app'> obj
     """
-    log_dir = os.path.join(app.config['APP_DATA_PATH'], 'logs')
+    log_dir = os.path.join('/data/logs')
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     app_log_file = os.path.join(log_dir, 'simple-honey.log')
+    if not os.path.exists(app_log_file):
+        open(app_log_file, 'a').close()
     handler = TimedRotatingFileHandler(app_log_file, when='midnight', interval=1)
     handler.setLevel(logging.DEBUG)
     handler.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s in %(module)s: %(message)s'))

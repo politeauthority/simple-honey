@@ -14,7 +14,7 @@ import app
 
 def file(path):
     """
-    Draws a file from the hosted files directory.
+    Draws a file from the 'hosted files' directory.
 
     :param path: The path of the file local to the hosted files directory.
     :type: path: str
@@ -39,7 +39,7 @@ def file(path):
 
 def template(template_file, requested_uri):
     """
-    Draws any template within app/templates. This method should probably be moved to a utility.
+    Draws any template within app/templates.
 
     :param template_file: Template file path relative to app/templates.
     :type template_file: str
@@ -48,9 +48,7 @@ def template(template_file, requested_uri):
     :returns: Rendered jinja template.
     :rtype: str
     """
-    data = {}
-    data['options'] = app.global_content['options']
-    data['requested'] = requested_uri
+    data = _build_base_data(requested_uri)
     return render_template(template_file, **data)
 
 
@@ -61,7 +59,7 @@ def template_image_center(requested_uri):
     :param requested_uri: The Uri info to be redirected.
     :type requested_uri: dict
     """
-    return template('home/image_center.html', requested_uri)
+    return template('uris/image_center.html', requested_uri)
 
 
 def nothing():
@@ -101,8 +99,19 @@ def redirect_client(requested_uri):
 
 
 def custom_template(requested_uri):
+    """
+    Tries to load a custom template, based on the requested_uri's value. If not found will a log warning
+    and return a blank page.
+
+    :param requested_uri: The Uri info to be redirected.
+    :type requested_uri: dict
+    :returns: A 'ready to ship' to a client str of content.
+    :rtype: str
+    """
     tempalte_path = os.path.join('/data/hosted_files/templates', requested_uri['value'])
     if not os.path.exists(tempalte_path):
+        warn_msg = """Could not find 'custom_template' path: %s, for uri %s. Will load blank page instead."""
+        app.app.logger.warning(warn_msg % (tempalte_path, requested_uri))
         return nothing()
     phile = open(tempalte_path)
     return phile.read()
@@ -125,10 +134,14 @@ def markdown(requested_uri):
     data = _build_base_data(requested_uri)
     md = ''
     markdown_template = os.path.join('/data/hosted_files', requested_uri['value'])
-    if os.path.exists(markdown_template):
-        md = markdown2.markdown_path(markdown_template)
-    else:
-        md = markdown2.markdown(requested_uri['value'])
+    try:
+        if os.path.exists(markdown_template):
+            md = markdown2.markdown_path(markdown_template)
+        else:
+            md = markdown2.markdown(requested_uri['value'])
+    except Exception as e:
+        app.app.logger.error("Error on rendering 'markdown': %s for uri: %s" % (e, requested_uri))
+        return nothing()
 
     data['title'] = title
     data['markdown'] = Markup(md)
@@ -152,17 +165,21 @@ def run_python(requested_uri):
     """
     python_file_path = os.path.join('/data/hosted_files/', requested_uri['value'])
     if not os.path.exists(python_file_path):
+        warn_msg = """Could not find 'custom_python' path: %s, for uri %s. Will load blank page instead."""
+        app.app.logger.warning(warn_msg % (python_file_path, requested_uri))
         return nothing()
 
+    data = _build_base_data(requested_uri)
     try:
         module_name = python_file_path[:python_file_path.rfind('/')]
         spec = importlib.util.spec_from_file_location(module_name, python_file_path)
         user_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(user_module)
-        return user_module.run(requested_uri)
-    except Exception:
+        return user_module.run(data)
+    except Exception as e:
         # @todo: This obviously needs to be better!
-        return 'error?'
+        app.app.logger.error("Error on running 'custom_python': %s for uri: %s" % (e, requested_uri))
+        return nothing()
 
 
 def _build_base_data(requested_uri):
