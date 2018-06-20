@@ -2,7 +2,6 @@
 Main file for the entire flask app.
 
 """
-import _pickle as cPickle
 import os
 import logging
 from logging.handlers import TimedRotatingFileHandler
@@ -28,13 +27,20 @@ from app.models.option import Option
 from app.models.known_ip import KnownIp
 from app.models.uri import Uri
 
-# Controllers
+# Front End Controllers
 from app.controllers.home import home as ctrl_home
 from app.controllers.authenticate import authenticate as ctrl_auth
 from app.controllers.files import files as ctrl_files
-from app.controllers.admin import WebRequestModelView, OptionModelView, KnownIpModelView, UriModelView, \
-    SimpleHoneyAdminAuthView, SimpleHoneyFileAdmin
 
+#Admin Controllers
+from app.controllers.admin.file_admin import FileAdmin
+from app.controllers.admin.auth_view import AuthView
+from app.controllers.admin.uri_model_view import UriModelView
+from app.controllers.admin.web_request_model_view import WebRequestModelView
+from app.controllers.admin.known_ip_model_view import KnownIpModelView
+from app.controllers.admin.options_model_view import OptionModelView
+
+# ETC
 from app.utilities import common
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
@@ -95,9 +101,9 @@ def register_admin(app):
     admin.add_view(UriModelView(Uri, db.session, name="Uris"))
     admin.add_view(WebRequestModelView(WebRequest, db.session, name="Web Requests"))
     admin.add_view(KnownIpModelView(KnownIp, db.session, name="Known IPs"))
-    admin.add_view(SimpleHoneyFileAdmin(os.environ.get('SH_HOSTED_FILES'), name='Hosted Files'))
+    admin.add_view(FileAdmin(os.environ.get('SH_HOSTED_FILES'), name='Hosted Files'))
     admin.add_view(OptionModelView(Option, db.session, name='Options'))
-    admin.add_view(SimpleHoneyAdminAuthView(name="Logout", endpoint='/auth/logout'))
+    admin.add_view(AuthView(name="Logout", endpoint='/auth/logout'))
 
     return admin
 
