@@ -7,7 +7,6 @@ from wtforms import validators
 
 from app.controllers.admin.base_model_view import BaseModelView
 from app.utilities import formatters
-from app.utilities import common
 from app.utilities import admin_tools
 
 
@@ -42,6 +41,6 @@ class UriModelView(BaseModelView):
             'validators': [validators.required()]
         },
     }
-    on_model_change = common.refresh_cache_file
+    on_model_change = admin_tools.refresh_cache_file
 
 # End File: simple-honey/app/controllers/admin/uri_model_view.py

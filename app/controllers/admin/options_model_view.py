@@ -6,7 +6,6 @@ from flask_admin.form import SecureForm
 
 from app.controllers.admin.base_model_view import BaseModelView
 from app.utilities import admin_tools
-from app.utilities import common
 
 
 class OptionModelView(BaseModelView):
@@ -24,6 +23,6 @@ class OptionModelView(BaseModelView):
 
     form_base_class = SecureForm
     form_excluded_columns = ['ts_created', 'ts_updated']
-    on_model_change = common.refresh_cache_file
+    on_model_change = admin_tools.refresh_cache_file
 
 # End File: simple-honey/app/controllers/admin/options_model_view.py
