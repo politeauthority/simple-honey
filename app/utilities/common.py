@@ -118,13 +118,17 @@ def save_serialized_file():
         pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-def load_cached():
+def load_cached(force=False):
     """
     Loads the cache file for options in and uri mapping, if it exists, or it creates it.
 
+    :param forced: Forces a rebuild of the cache file regaurdless of it's existence.
+    :type forced: bool
     :returns: The cached data.
     :rtype: dict:
     """
+    if force:
+        save_serialized_file()
     try:
         pickled_data = open(os.environ.get('SH_CACHE_FILE'), "rb")
     except OSError:

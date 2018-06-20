@@ -119,6 +119,7 @@ def register_options():
         'admin-user': os.environ.get('SH_ADMIN_USER'),
         'admin-pass': generate_password_hash(os.environ.get('SH_ADMIN_PASS')),
         'google-analytics': None,
+        'enable-custom-python-uris': None,
     }
     Option.set_defaults(defaults)
 
@@ -142,7 +143,7 @@ def load_cached():
     :returns: Loaded cache.
     :rtype dict:
     """
-    return common.load_cached()
+    return common.load_cached(force=True)
 
 
 db.create_all()

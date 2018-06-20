@@ -34,6 +34,7 @@ class UriModelView(BaseModelView):
             ('raw_content', 'Raw Content'),
             ('custom_template', 'Custom Template'),
             ('markdown', 'Mark Down (.md)'),
+            ('python_file', 'Custom Python File')
         ]
     }
     form_args = {
