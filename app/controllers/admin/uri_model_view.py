@@ -33,6 +33,7 @@ class UriModelView(BaseModelView):
             ('image_center', 'Image Centered'),
             ('raw_content', 'Raw Content'),
             ('custom_template', 'Custom Template'),
+            ('markdown', 'Mark Down (.md)'),
         ]
     }
     form_args = {

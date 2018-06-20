@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{%block title%}{%endblock%}</title>
+        <meta charset=”utf-8”>
+        <link rel="stylesheet" href="/static/vendor/github.css">
+    </head>
+    <body>
+        <div id="wrapper">
+            {{markdown}}
+            {%block javascript%}{%endblock%}
+        </div>
+    </body>
+</html>
+
+

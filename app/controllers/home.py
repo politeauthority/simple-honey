@@ -36,6 +36,9 @@ def index(path):
             return draw.raw_content(matched_uri_path)
         elif matched_uri_path['response_type'] == 'custom_template':
             return draw.custom_template(matched_uri_path)
+        elif matched_uri_path['response_type'] == 'markdown':
+            return draw.markdown(matched_uri_path)
+
     return draw.nothing()
 
 
