@@ -4,9 +4,10 @@ Draws all the different types of responses for Simple Honey
 """
 import importlib.util
 import os
-import sys
 
 from flask import send_file, redirect, render_template, Response
+from jinja2 import Markup
+import markdown2
 
 import app
 
@@ -107,6 +108,34 @@ def custom_template(requested_uri):
     return phile.read()
 
 
+def markdown(requested_uri):
+    """
+
+    :param requested_uri: The Uri info to be redirected.
+    :type requested_uri: dict
+    :returns: Global options, and the clients Request information.markdown
+    :rtype: dict
+    """
+    title = ''
+    if requested_uri['value']:
+        title = requested_uri['value']
+    else:
+        return False
+
+    data = _build_base_data(requested_uri)
+    md = ''
+    markdown_template = os.path.join('/data/hosted_files', requested_uri['value'])
+    if os.path.exists(markdown_template):
+        md = markdown2.markdown_path(markdown_template)
+    else:
+        md = markdown2.markdown(requested_uri['value'])
+
+    data['title'] = title
+    data['markdown'] = Markup(md)
+    data['style_file'] = '/static/vendor/github_markdown.css'
+    return render_template('uris/markdown.html', **data)
+
+
 def run_python(requested_uri):
     """
     VERY BETA FEATURE!
@@ -134,5 +163,12 @@ def run_python(requested_uri):
     except Exception:
         # @todo: This obviously needs to be better!
         return 'error?'
+
+
+def _build_base_data(requested_uri):
+    data = {}
+    data['options'] = app.global_content['options']
+    data['requested'] = requested_uri
+    return data
 
 # End File: simple-honey/app/utilities/draw.py
