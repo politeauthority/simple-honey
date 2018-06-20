@@ -1,5 +1,5 @@
-"""Simple Honey Model View
-This is the base object to help define simple-honey model objects to make them accessable to the admin.
+"""Base Model View
+This is the base model view controller object to help define simple-honey model objects to make them accessable to the admin.
 
 """
 from flask import redirect
@@ -24,3 +24,5 @@ class BaseModelView(ModelView):
 
         """
         return redirect(common.admin_uri(), 403)
+
+# End File: simple-honey/app/controllers/admin/base_model_view.py

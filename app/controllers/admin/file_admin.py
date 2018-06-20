@@ -1,5 +1,7 @@
 """File Admin
-This is a minor extension and connection to the FlaskAdmin file admin module which i've found to be excellent!
+The FlaskAdmin, FileAdmin interface connection which I've found to be excellent!
+This allows for file uploads/ renames and deletion.
+
 """
 from flask import redirect
 from flask_admin.contrib.fileadmin import FileAdmin
