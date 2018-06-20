@@ -7,12 +7,13 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 from flask import Flask
-from flask_admin import Admin
-from werkzeug.security import generate_password_hash
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from werkzeug.contrib.fixers import ProxyFix
+from werkzeug.security import generate_password_hash
+from flask_admin import Admin
+import flask_restless
 
 # import flask_restless
 
@@ -42,6 +43,7 @@ from app.controllers.admin.options_model_view import OptionModelView
 
 # ETC
 from app.utilities import common
+from app.utilities import auth
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
@@ -119,6 +121,7 @@ def register_options():
         'admin-user': os.environ.get('SH_ADMIN_USER'),
         'admin-pass': generate_password_hash(os.environ.get('SH_ADMIN_PASS')),
         'google-analytics': None,
+        'enable_api': False,
     }
     Option.set_defaults(defaults)
 
@@ -145,15 +148,32 @@ def load_cached():
     return common.load_cached()
 
 
+def register_api(app):
+    """
+    Enables the API routes and configruation.
+
+    """
+    if global_content['options']['enable_api'].value not in ('1', 'True', 'true'):
+        return
+    manager = flask_restless.APIManager(app, flask_sqlalchemy_db=db)
+    manager.create_api(
+        Uri,
+        methods=['GET'],
+        collection_name='uri',
+        max_results_per_page=365,
+        preprocessors=dict(GET_SINGLE=[auth.check]))
+    manager.create_api(WebRequest, methods=['GET'], max_results_per_page=365)
+
+
 db.create_all()
 DebugToolbarExtension(app)
 register_logging(app)
 register_session(app)
-register_blueprints(app)
 register_options()
 admin = register_admin(app)
 global_content = load_cached()
-# register_api(app)
+register_api(app)
+register_blueprints(app)
 
 app.logger.info('Started App')
 
