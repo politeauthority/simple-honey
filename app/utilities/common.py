@@ -104,17 +104,6 @@ def _get_file_uris():
     return the_map
 
 
-def refresh_cache_file(form, model, is_created):
-    """
-    Saves and reloads the cache file.
-    @note The primary entry point to this method is from FlaskAdmin's "on_model_change", it should not be used outside
-    of a FlaskAdmin hook.
-
-    """
-    save_serialized_file()
-    app.global_content = load_cached()
-
-
 def save_serialized_file():
     """
     Saves options and uri map as a serialized cache file.
