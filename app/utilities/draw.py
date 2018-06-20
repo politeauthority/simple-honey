@@ -1,12 +1,12 @@
-"""Render - Utilities
+"""Draw - Utilities
 Draws all the different types of responses for Simple Honey
 
 """
+import importlib.util
 import os
+import sys
 
 from flask import send_file, redirect, render_template, Response
-from jinja2 import Markup
-import markdown2
 
 import app
 
@@ -38,17 +38,18 @@ def file(path):
 
 def template(template_file, requested_uri):
     """
-    Draws any template within app/templates.
+    Draws any template within app/templates. This method should probably be moved to a utility.
 
     :param template_file: Template file path relative to app/templates.
     :type template_file: str
     :param requested_uri: Uri the client hit on.
     :type requested_uri: str
-    :returns: Rendered jinja template, ready for sending to client.
+    :returns: Rendered jinja template.
     :rtype: str
     """
-    data = _base_template_arguments(requested_uri)
-
+    data = {}
+    data['options'] = app.global_content['options']
+    data['requested'] = requested_uri
     return render_template(template_file, **data)
 
 
@@ -72,7 +73,6 @@ def nothing():
     """
     data = {}
     data['options'] = app.global_content['options']
-
     return render_template('boiler.html', **data)
 
 
@@ -100,54 +100,39 @@ def redirect_client(requested_uri):
 
 
 def custom_template(requested_uri):
-    """
-
-    :param requested_uri: The Uri info to be redirected.
-    :type requested_uri: dict
-    """
     tempalte_path = os.path.join('/data/hosted_files/templates', requested_uri['value'])
     if not os.path.exists(tempalte_path):
         return nothing()
     phile = open(tempalte_path)
-
     return phile.read()
 
 
-def markdown(requested_uri):
+def run_python(requested_uri):
     """
+    VERY BETA FEATURE!
+    This method allows for a custom python script to be used for the exectuon of the uri.
+    The script is given the request_uri information, the many/ all internal draw scripts are give.
 
-    :param requested_uri: The Uri info to be redirected.
-    :type requested_uri: dict
+    @note: The developer of Simple-Honey is aware of the poitential security implications of this, however
+    only trusted users with access to the admin could upload/ create a uri which would trigger this usgage.
+    Regaurdless, this will be made an optional feature users must enable, default will be none.
+
+    Please refer to Simple-Honey URI documentation for info on how to make modules to interface will this,
+    if you're looking for that documentation check the github pages.
+
     """
-    html = ''
-    title = ''
-    markdown_template = os.path.join('/data/hosted_files', requested_uri['value'])
-    if os.path.exists(markdown_template):
-        html = markdown2.markdown_path(markdown_template)
-    else:
-        html = markdown2.markdown(requested_uri['value'])
+    python_file_path = os.path.join('/data/hosted_files/', requested_uri['value'])
+    if not os.path.exists(python_file_path):
+        return nothing()
 
-    if requested_uri['value']:
-        title = requested_uri['value']
-
-    data = _base_template_arguments(requested_uri)
-    data['title'] = title
-    data['markdown'] = Markup(html)
-    return render_template('uris/markdown.html', **data)
-
-
-def _base_template_arguments(requested_uri):
-    """
-    The minimal dynamic arguments that we will send to almost every template.
-
-    :param requested_uri: The Uri info to be redirected.
-    :type requested_uri: dict
-    :returns: Global options, and the clients Request information.markdown
-    :rtype: dict
-    """
-    data = {}
-    data['options'] = app.global_content['options']
-    data['requested'] = requested_uri
-    return data
+    try:
+        module_name = python_file_path[:python_file_path.rfind('/')]
+        spec = importlib.util.spec_from_file_location(module_name, python_file_path)
+        user_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(user_module)
+        return user_module.run(requested_uri)
+    except Exception:
+        # @todo: This obviously needs to be better!
+        return 'error?'
 
 # End File: simple-honey/app/utilities/draw.py

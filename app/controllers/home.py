@@ -3,6 +3,7 @@
 """
 from flask import Blueprint, request
 
+import app
 from app.utilities import track
 from app.utilities import draw
 from app.utilities import common
@@ -36,9 +37,11 @@ def index(path):
             return draw.raw_content(matched_uri_path)
         elif matched_uri_path['response_type'] == 'custom_template':
             return draw.custom_template(matched_uri_path)
-        elif matched_uri_path['response_type'] == 'markdown':
-            return draw.markdown(matched_uri_path)
-
+        elif (
+                app.global_content['options']['enable-custom-python-uris'].value and
+                str(app.global_content['options']['enable-custom-python-uris'].value).lower() in ('1', 'true') and
+                matched_uri_path['response_type'] == 'python_file'):
+                return draw.run_python(matched_uri_path)
     return draw.nothing()
 
 
