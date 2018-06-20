@@ -1,5 +1,7 @@
 """Admin Auth View
 FlaskAdmin specific class to handle authentication portal to admin views.
+The class structure here is a generic interface, and primarily relies on the the app/controllers/authenticate.py
+for logic on how to authenticate a user.
 
 """
 from flask import redirect

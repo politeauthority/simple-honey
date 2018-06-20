@@ -1,5 +1,5 @@
 """Option Model View
-This is a really generic, flexible model for quick projects, this is the admin controoler.
+This is a really generic, flexible model view for the FlaskOriented "Options" model created by @politeauthority.
 
 """
 from flask_admin.form import SecureForm
