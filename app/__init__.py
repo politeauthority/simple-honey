@@ -53,7 +53,7 @@ def register_logging(app):
     :param app: Current Flask application
     :type app: <Flask 'app'> obj
     """
-    log_dir = os.path.join('/data/logs')
+    log_dir = os.path.join('/data/')
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     app_log_file = os.path.join(log_dir, 'simple-honey.log')
