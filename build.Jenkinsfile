@@ -6,7 +6,7 @@ podTemplate(
     containers:
         [
             containerTemplate(
-                image: 'debian/stable',
+                image: 'debian',
                 name: 'debian',
                 ttyEnabled: true,
                 command: 'tail -f /dev/null',
