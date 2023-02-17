@@ -13,7 +13,7 @@ gunicorn==19.7.1
 html5lib==0.999
 itsdangerous==0.24
 Jinja2==2.9.6
-markdown2==2.3.5
+markdown2==2.4.4
 Mako==1.0.7
 MarkupSafe==1.0
 mimerender==0.6.0
@@ -25,4 +25,4 @@ six==1.11.0
 SQLAlchemy==1.1.13
 urllib3==1.9.1
 Werkzeug==0.12.2
-WTForms==2.1
+WTForms==2.3.0
